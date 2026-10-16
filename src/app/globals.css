@@ -88,6 +88,11 @@ html {
   scroll-padding-top: 80px;
 }
 
+/* Large monitors (above 1920px wide): type and spacing sized in rem grow gradually, up to about 1.5x at 2560px. */
+@media (min-width: 1921px) {
+  html { font-size: calc(16px + (min(100vw, 3200px) - 1920px) * 0.0094); }
+}
+
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -381,6 +386,9 @@ body {
 }
 
 .hero-logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   color: var(--hero-ink);
   text-decoration: none;
   font-size: 1.1rem;
@@ -391,8 +399,11 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: flex-end;
   gap: 6px;
-  padding: 10px 0 10px 10px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px 0 10px 14px;
   background: none;
   border: 0;
   cursor: pointer;
@@ -437,7 +448,13 @@ body {
   cursor: default;
 }
 
-.hero-line { display: block; overflow: hidden; padding-bottom: 0.06em; }
+.hero-line {
+  display: block;
+  /* clip only the vertical slide-in; on wide screens the last letter used to be cut off at the side */
+  overflow-x: visible;
+  overflow-y: clip;
+  padding-bottom: 0.06em;
+}
 
 .hero-line > span {
   display: block;
@@ -504,6 +521,7 @@ body {
 }
 
 @media (min-width: 1024px) {
+  .hero-copy { max-width: min(34rem, calc(41vw - var(--hero-pad) - 1rem)); }
   .hero-media {
     position: absolute;
     top: 0;
@@ -1488,6 +1506,7 @@ body {
 .ts-name {
   position: relative;
   max-width: 100%;
+  overflow-wrap: anywhere;
   font-size: 0.86rem;
   font-weight: 500;
   line-height: 1.25;
@@ -1517,6 +1536,9 @@ body {
 
 @media (max-width: 640px) {
   .ts-tool { width: 6.2rem; height: 6.9rem; padding-top: 0.9rem; }
+}
+@media (max-width: 400px) {
+  .ts-name { font-size: 0.76rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1745,7 +1767,7 @@ body {
 }
 
 .cn-write { margin: 1.2rem 0 0; color: var(--cn-dim); font-size: 1rem; }
-.cn-write a { margin-left: 0.4rem; color: var(--cn-ink); text-decoration: none; border-bottom: 1px solid var(--cn-line); }
+.cn-write a { display: inline-block; margin-left: 0.4rem; padding: 0.5rem 0 0.2rem; color: var(--cn-ink); text-decoration: none; border-bottom: 1px solid var(--cn-line); overflow-wrap: anywhere; }
 .cn-write a:hover { border-bottom-color: var(--cn-ink); }
 
 .cn-form {
@@ -2009,7 +2031,7 @@ body {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
-.ft-bar a { color: inherit; text-decoration: none; }
+.ft-bar a { display: inline-block; padding: 0.7rem 0.25rem; margin: -0.7rem -0.25rem; color: inherit; text-decoration: none; }
 .ft-bar a:hover { color: #d1181f; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -5797,4 +5819,30 @@ button.dot-close:hover {
 @media (prefers-reduced-motion: reduce) {
   .dl-window, .dl-overlay, .dl-format, .dl-result, .dl-check, .dl-error { animation: none; }
   .dl-spin, .dl-fill.indeterminate { animation: none; }
+}
+
+/* Phones zoom the page when a field smaller than 16px is focused, so the search and link boxes use 16px there. */
+@media (max-width: 768px) {
+  .mw-search-input,
+  .dl-field input { font-size: 16px; }
+}
+
+/* MusicWave on phones and tablets: a tidy top row and roomier controls */
+@media (max-width: 900px) {
+  .mw-mobile-menu { top: 1.7rem; }
+  .mw-search-wrap { margin: 1.7rem 0.8rem 0; }
+  /* the top row sits on the cream panel here, so the window buttons need dark colors */
+  .mw-win-btn { border-color: rgba(60, 44, 10, 0.28); background: rgba(29, 24, 12, 0.06); color: var(--mw-ink); }
+  .mw-win-btn:hover { background: var(--mw-yellow); border-color: var(--mw-yellow); color: #1b1a14; }
+  .mw-tab { padding: 0.65rem 0; }
+  .mw-fav-btn { padding: 0.55rem; margin: -0.55rem; }
+}
+@media (max-width: 640px) {
+  .mw-window-actions { margin-top: 1.7rem; }
+  .mw-win-btn { width: 36px; height: 36px; }
+  .mw-window-actions .mw-win-btn:nth-child(2) { display: none; } /* maximize does nothing on a phone */
+  .mw-search-wrap { margin: 1.7rem 0.5rem 0; }
+  .mw-back-link { width: 36px; height: 36px; padding: 0; justify-content: center; }
+  .mw-back-link span { display: none; }
+  .mp-ctrl { padding: 0.55rem; }
 }
