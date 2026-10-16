@@ -10,7 +10,7 @@ const ACCENT = "#d1181f";
 const NAME = "THE KALYAN";
 
 // The race-car clip shown under the name (a file in /public).
-const F1_VIDEO = "/f1-strip-2.mp4";
+const F1_VIDEO = "/f1-footer.mp4";
 
 /* ------------------------------------------------------------------ */
 /* A word drawn as a grid of small squares; dots near the pointer light up red. */
