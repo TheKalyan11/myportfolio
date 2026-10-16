@@ -10,6 +10,8 @@ export const PHONE = "+91 91008 89955";
 export const SOCIALS: { label: string; href: string }[] = [
   { label: "GitHub", href: "https://github.com/TheKalyan11" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/kalyan-fullstack-dev" },
+  { label: "Instagram", href: "https://www.instagram.com/thekalyan11" },
+  { label: "X (Twitter)", href: "https://x.com/kalyanmude17291" },
 ];
 
 // Drives the "Based in" box: the map pin and the live clock.
