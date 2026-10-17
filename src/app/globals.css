@@ -5846,3 +5846,65 @@ button.dot-close:hover {
   .mw-back-link span { display: none; }
   .mp-ctrl { padding: 0.55rem; }
 }
+
+/* Custom pointer: a small black bunny that turns red while you press the mouse button.
+   (Touch screens have no pointer, so phones and tablets simply ignore this.) */
+body,
+body * { cursor: url("/cursor.svg") 5 22, auto !important; }
+
+body a,
+body button,
+body summary,
+body select,
+body label,
+body [role="button"],
+body [role="tab"],
+body [role="radio"],
+body [role="slider"],
+body input[type="checkbox"],
+body input[type="range"],
+body .explore-card { cursor: url("/cursor.svg") 5 22, pointer !important; }
+
+/* pressed: the same bunny in red */
+body :active { cursor: url("/cursor-red.svg") 5 22, pointer !important; }
+
+body input:not([type="checkbox"]):not([type="range"]):not([type="radio"]),
+body textarea { cursor: text !important; }
+
+body button:disabled,
+body [disabled] { cursor: not-allowed !important; }
+
+/* Selecting text highlights it in red */
+::selection { background: #d1181f; color: #ffffff; }
+::-moz-selection { background: #d1181f; color: #ffffff; }
+
+/* ===== Opening screen: the signature writes itself on red, then the page slides up ===== */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100010; /* above everything, including the mini-player */
+  display: grid;
+  place-items: center;
+  background: #d1181f;
+  cursor: pointer;
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.splash.leaving { transform: translateY(-100%); }
+html[data-splash="seen"] .splash { display: none; }
+html.splash-lock, html.splash-lock body { overflow: hidden; }
+
+.splash-sig { width: min(72vw, 600px); height: auto; overflow: visible; }
+.splash-sig path {
+  fill: none;
+  stroke: #ffffff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: splash-draw var(--dur) cubic-bezier(0.45, 0.05, 0.3, 1) var(--delay) both;
+}
+@keyframes splash-draw {
+  0%   { stroke-dashoffset: 1; opacity: 0; }
+  1%   { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}

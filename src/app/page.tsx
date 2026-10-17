@@ -7,6 +7,7 @@ import CertificationsSection from "@/components/CertificationsSection";
 import ExploreSection from "@/components/ExploreSection";
 import ContactSection from "@/components/ContactSection";
 import FooterSection from "@/components/FooterSection";
+import SplashScreen from "@/components/SplashScreen";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
         background: "#efeeeb",
       }}
     >
+      <SplashScreen />
       <main style={{ flex: 1 }}>
         <Hero />
         <IntroSection />

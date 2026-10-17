@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <g id="bunny">
+      <ellipse cx="14" cy="9.5" rx="3.8" ry="8" transform="rotate(-8 14 9.5)"/>
+      <ellipse cx="25" cy="11" rx="3.8" ry="8" transform="rotate(38 25 11)"/>
+      <ellipse cx="18" cy="24.5" rx="9.5" ry="8"/>
+      <circle cx="10" cy="21.5" r="5.2"/>
+      <path d="M6 20 L1.2 22.6 L6.4 24.6 Z"/>
+    </g>
+  </defs>
+  <use xlink:href="#bunny" href="#bunny" fill="#ffffff" stroke="#ffffff" stroke-width="3.6" stroke-linejoin="round"/>
+  <use xlink:href="#bunny" href="#bunny" fill="#0a0a0a"/>
+  <circle cx="9" cy="20.2" r="1.15" fill="#ffffff"/>
+</svg>

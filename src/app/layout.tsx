@@ -81,6 +81,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${funnelDisplay.variable} ${poppins.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Visitors who already saw the opening screen (or prefer reduced motion) skip it, with no flash of red. */}
+        <script dangerouslySetInnerHTML={{ __html: "(function(){try{var seen=sessionStorage.getItem(\"splash-seen\");var calm=window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches;if(seen||calm){document.documentElement.dataset.splash=\"seen\"}}catch(e){}})();" }} />
+        <noscript>
+          <style>{".splash{display:none}"}</style>
+        </noscript>
+      </head>
       <body>
         <ThemeProvider>
           <MusicPlayerProvider>
