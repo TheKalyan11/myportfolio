@@ -6217,3 +6217,9 @@ body.has-mini-player .fpt { bottom: calc(6.4rem + env(safe-area-inset-bottom, 0p
 @media (hover: none) {
   .fpt:hover .fpt-btn { transform: none; filter: none; }
 }
+
+/* Phones: every service card stays open, with its animated mockup, instead of folding one at a time while scrolling */
+@media (max-width: 900px) {
+  .svc .svc-body { height: var(--open-h); border-top-color: var(--svx-rule); transition: none; }
+  .svc .svc-cluster { scale: var(--s-open); transition: none; }
+}
