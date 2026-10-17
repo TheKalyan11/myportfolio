@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { BadgeCheck, Layers } from "lucide-react";
 import { siShopify, siWebflow } from "simple-icons";
+import { prefersReducedMotion } from "@/lib/motion";
 
 const LINES = ["Certifications", "& Partnerships"];
 
@@ -52,7 +53,7 @@ export default function CertificationsSection() {
     const stageEl = stage.current;
     if (!trackEl || !stageEl) return;
     const chars = Array.from(stageEl.querySelectorAll<HTMLElement>(".ct-char"));
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = prefersReducedMotion();
     if (reduced) {
       chars.forEach((c) => c.style.setProperty("--t", "1"));
       stageEl.style.setProperty("--rest", "1");

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { prefersReducedMotion } from "@/lib/motion";
 
 const INTRO =
   "Hi, I'm Kalyan - a full stack developer with a name that sounds like a blessing. I build web and mobile products people enjoy using and systems that never make them wait. Interfaces, APIs and the cloud they run on - and when the work needs art direction, motion or 3D, that gets made here too.";
@@ -156,7 +157,7 @@ export default function IntroSection() {
     const el = text.current;
     if (!track || !stage || !el) return;
     const words = Array.from(el.querySelectorAll<HTMLElement>(".intro-word"));
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = prefersReducedMotion();
     if (reduced) {
       words.forEach((w) => (w.style.color = fillColor(1)));
       return;

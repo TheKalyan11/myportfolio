@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { Boxes, BrainCircuit, LayoutTemplate, ScanSearch, Smartphone, type LucideIcon } from "lucide-react";
+import { prefersReducedMotion } from "@/lib/motion";
 import {
   siHtml5,
   siCss,
@@ -248,7 +249,7 @@ export default function TechStackSection() {
     const el = root.current;
     if (!el) return;
     const targets = Array.from(el.querySelectorAll<HTMLElement>("[data-ts-reveal]"));
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (!("IntersectionObserver" in window) || prefersReducedMotion()) {
       targets.forEach((t) => t.classList.add("is-in"));
       return;
     }

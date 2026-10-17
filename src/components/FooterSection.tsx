@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState, useSyncExternalStore } from "react"
 import { ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react";
 import { CITY, EMAIL, EMAIL_ALT, PHONE, SOCIALS } from "@/data/contact";
 import { INDIA_OUTLINE } from "@/data/indiaOutline";
+import { prefersReducedMotion } from "@/lib/motion";
 
 const INK = "#0a0a0a";
 const ACCENT = "#d1181f";
@@ -11,6 +12,9 @@ const NAME = "THE KALYAN";
 
 // The race-car clip shown under the name (a file in /public).
 const F1_VIDEO = "/f1-footer.mp4";
+// A smaller copy (960 px wide, about 150 KB) for phones and a still first frame shown until the clip starts.
+const F1_VIDEO_MOBILE = "/f1-footer-mobile.mp4";
+const F1_POSTER = "/f1-footer-poster.jpg";
 
 /* ------------------------------------------------------------------ */
 /* A word drawn as a grid of small squares; dots near the pointer light up red. */
@@ -289,27 +293,63 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 /* ------------------------------------------------------------------ */
 function RaceVideo() {
   const ref = useRef<HTMLVideoElement>(null);
-
-  // A silent clip that plays only while the strip is on screen.
+  // Which file to load is decided on the client, so a phone never downloads the large Full HD one.
+  const [src, setSrc] = useState<string | null>(null);
   useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // stays on its first frame
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) v.play().catch(() => {});
-        else v.pause();
-      },
-      { threshold: 0.15 },
-    );
-    io.observe(v);
-    return () => {
-      io.disconnect();
-      v.pause();
-    };
+    const phone = window.matchMedia("(max-width: 768px)").matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    setSrc(phone || saveData ? F1_VIDEO_MOBILE : F1_VIDEO);
   }, []);
 
-  return <video ref={ref} className="ft-video" src={F1_VIDEO} muted loop playsInline preload="metadata" aria-hidden />;
+  // A silent clip that plays only while the strip is on screen. Phones can refuse the first play() (data saver,
+  // low-power mode), so it is tried again on the first touch and whenever the tab comes back.
+  useEffect(() => {
+    const v = ref.current;
+    if (!v || !src) return;
+    if (prefersReducedMotion()) return; // stays on its first frame
+    let visible = false;
+    const tryPlay = () => {
+      if (visible) v.play().catch(() => {});
+    };
+    const io = new IntersectionObserver(
+      ([e]) => {
+        visible = e.isIntersecting;
+        if (visible) tryPlay();
+        else v.pause();
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(v);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") tryPlay();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("touchstart", tryPlay, { passive: true });
+    window.addEventListener("scroll", tryPlay, { passive: true, once: true });
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("touchstart", tryPlay);
+      window.removeEventListener("scroll", tryPlay);
+      v.pause();
+    };
+  }, [src]);
+
+  return (
+    <video
+      ref={ref}
+      className="ft-video"
+      src={src ?? undefined}
+      poster={F1_POSTER}
+      muted
+      loop
+      autoPlay
+      playsInline
+      preload="auto"
+      disablePictureInPicture
+      aria-hidden
+    />
+  );
 }
 
 export default function FooterSection() {

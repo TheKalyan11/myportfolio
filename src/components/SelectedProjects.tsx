@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { prefersReducedMotion } from "@/lib/motion";
 type ProjectItem = {
   slug: string;
   name: string; // shown large in the list
@@ -132,7 +133,7 @@ export default function SelectedProjects() {
     const el = root.current;
     if (!el) return;
     const targets = Array.from(el.querySelectorAll<HTMLElement>("[data-reveal]"));
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (!("IntersectionObserver" in window) || prefersReducedMotion()) {
       targets.forEach((t) => t.classList.add("is-in"));
       return;
     }

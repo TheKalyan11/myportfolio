@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { SIGNATURE } from "@/data/signature";
+import { prefersReducedMotion } from "@/lib/motion";
 
 /**
  * The opening screen: a red page where the signature writes itself, then the page slides up to reveal the site.
@@ -34,7 +35,7 @@ export default function SplashScreen() {
 
   useEffect(() => {
     if (played) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (prefersReducedMotion()) {
       played = true;
       return;
     }

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { prefersReducedMotion } from "@/lib/motion";
 
 type Shot = { src: string; host: string };
 
@@ -93,7 +94,7 @@ export default function ServicesSection() {
     const wrapEl = wrap.current;
     if (!trackEl || !stageEl || !overlayEl || !strokesEl || !titleEl || !wrapEl) return;
 
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = prefersReducedMotion();
     const cards = Array.from(wrapEl.querySelectorAll<HTMLElement>(".svc"));
 
     // Where each bar starts and how thick it is, in screen px, so droplets can be placed beyond its tip.

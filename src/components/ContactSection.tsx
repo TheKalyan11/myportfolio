@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { EMAIL, EMAIL_ALT } from "@/data/contact"; // where messages go; edit it in src/data/contact.ts
+import { prefersReducedMotion } from "@/lib/motion";
 
 
 // Sky video in /public (a free-to-use Pexels clip), looped without a visible restart (see the effect below).
@@ -93,7 +94,7 @@ export default function ContactSection() {
     if (!top || !bottom) return;
 
     // Visitors who prefer reduced motion get a still frame instead of a moving sky.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (prefersReducedMotion()) {
       top.style.opacity = "1";
       top.pause();
       bottom.pause();
