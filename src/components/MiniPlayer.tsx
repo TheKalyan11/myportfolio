@@ -2,7 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume1, Volume2, VolumeX, X } from "lucide-react";
+import Link from "next/link";
+import { Pause, Play, Repeat, Repeat1, Shuffle, SkipBack, SkipForward, Volume1, Volume2, VolumeX, X, Maximize2 } from "lucide-react";
 import { useMusicPlayer } from "@/context/MusicPlayerContext";
 
 const FALLBACK_ART =
@@ -166,6 +167,11 @@ export default function MiniPlayer() {
           className="mp-vol-slider"
           aria-label="Volume"
         />
+        {viewCount === 0 && (
+          <Link href="/music" className="mp-ctrl mp-max" aria-label="Open the full MusicWave player" title="Open full player">
+            <Maximize2 size={16} />
+          </Link>
+        )}
         {viewCount === 0 && (
           <button type="button" className="mp-ctrl mp-close" onClick={p.stop} aria-label="Close player">
             <X size={16} />

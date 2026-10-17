@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { MusicPlayerProvider } from "@/context/MusicPlayerContext";
 import MiniPlayer from "@/components/MiniPlayer";
+import FloatingPlayButton from "@/components/FloatingPlayButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,6 +88,7 @@ export default function RootLayout({
             <div className="bg-grid-ambient" />
             {children}
             <MiniPlayer />
+            <FloatingPlayButton />
           </MusicPlayerProvider>
         </ThemeProvider>
       </body>

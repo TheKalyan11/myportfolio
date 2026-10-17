@@ -267,6 +267,26 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
 
   // While this window is open the mini-player is shown, and the first song list is loaded.
   useEffect(() => registerView(), [registerView]);
+
+  // The "which version should be developed" vote. It is only remembered in this browser (no server collects it).
+  const [vote, setVote] = useState<"website" | "app" | null>(null);
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem("mw-version-vote");
+      if (saved === "website" || saved === "app") setVote(saved);
+    } catch {
+      /* storage blocked: the vote still works for this visit */
+    }
+  }, []);
+  const castVote = (choice: "website" | "app" | null) => {
+    setVote(choice);
+    try {
+      if (choice) window.localStorage.setItem("mw-version-vote", choice);
+      else window.localStorage.removeItem("mw-version-vote");
+    } catch {
+      /* ignore */
+    }
+  };
   useEffect(() => {
     ensureTracks();
   }, [ensureTracks]);
@@ -633,9 +653,9 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
             </div>
             <div className="mw-side-note">
               <p>
-                😂 <strong>Warning: Crazy Features Ahead!</strong>
+                <strong>30-Second Previews</strong>
               </p>
-              <p>This website is already crazy enough! More madness is coming soon. 🤪❤️</p>
+              <p>Every song here plays as a 30-second preview clip, so each track stops at 0:30. Full-length songs are not available.</p>
               <p>
                 <strong>Crafted with ❤️ by Kalyan — professionally unserious since day one!</strong> 😂
               </p>
@@ -715,10 +735,29 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
                     </div>
                   ))}
                 </div>
-                <p className="mw-app-note">
-                  <Sparkles size={14} />
-                  <span>Many more artists and albums are available only in the application.</span>
-                </p>
+                <div className="mw-vote" role="group" aria-label="Vote for the next version">
+                  <p className="mw-vote-title">
+                    <Sparkles size={14} />
+                    <span>Please vote: which fully featured version should be developed?</span>
+                  </p>
+                  {vote === null ? (
+                    <div className="mw-vote-options">
+                      <button type="button" className="mw-vote-btn" onClick={() => castVote("website")}>
+                        Fully featured website
+                      </button>
+                      <button type="button" className="mw-vote-btn" onClick={() => castVote("app")}>
+                        Mobile application
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="mw-vote-thanks">
+                      Thank you! You voted for the {vote === "website" ? "fully featured website" : "mobile application"}.{" "}
+                      <button type="button" className="mw-vote-change" onClick={() => castVote(null)}>
+                        Change vote
+                      </button>
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
@@ -742,14 +781,13 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
                 >
                   via GIPHY
                 </a>
-                <h2 className="mw-favorites-title">Favorites — Coming Soon</h2>
-                <p className="mw-favorites-subtitle">Currently under testing</p>
+                <h2 className="mw-favorites-title">Favorites? Not Here, Buddy!</h2>
+                <p className="mw-favorites-subtitle">Looking for a Favorites feature? Nice try!</p>
                 <p className="mw-favorites-desc">
-                  The Favorites feature is currently under development and will soon be available on the MusicWave
-                  web version. Stay tuned for updates as we work to bring you the ability to save your favorite songs
-                  and access them easily.
+                  This feature isn&apos;t available on MusicWave, and we have no plans to develop it. For now, keep
+                  searching for your favorite songs whenever you want to listen.
                 </p>
-                <p className="mw-favorites-thanks">Thank you</p>
+                <p className="mw-favorites-thanks">Enjoy the music, and don&apos;t get too attached!</p>
               </div>
             )}
 
@@ -782,11 +820,12 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
                     language, or artist name and stream your favorite music directly on the website.
                   </p>
                   <ul className="mw-note-list">
+                    <li><strong>30-Second Previews:</strong> Every song plays as a 30-second preview clip supplied by Apple&apos;s preview service. Full-length songs are not available here, because the full tracks belong to their labels.</li>
                     <li><strong>Search Music:</strong> Find songs by title, language, or artist name.</li>
                     <li><strong>Online Streaming:</strong> Play available songs directly on the website.</li>
                     <li><strong>Explore Languages:</strong> Discover music from different languages and explore available playlists.</li>
                     <li><strong>Music Controls:</strong> Enjoy play, pause, next, previous, and volume controls.</li>
-                    <li><strong>Favorites — Coming Soon:</strong> The Favorites feature will be available on the web soon. You&apos;ll be able to save your favorite songs and access them easily.</li>
+                    <li><strong>No Favorites:</strong> There is no Favorites feature on MusicWave and none is planned. Just search for a song whenever you want to hear it.</li>
                     <li><strong>Other Features:</strong> Advanced search options, detailed artist information, personalized playlists, and listening history may be introduced in future updates.</li>
                   </ul>
                 </article>
