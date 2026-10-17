@@ -5902,7 +5902,7 @@ html.splash-lock, html.splash-lock body { overflow: hidden; }
   stroke: #ffffff;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 1;
+  stroke-dasharray: 1 1;
   stroke-dashoffset: 1;
   animation: splash-draw var(--dur) linear var(--delay) both;
 }

@@ -12,17 +12,20 @@ import { SIGNATURE } from "@/data/signature";
 // true once it has played in this page load (a full reload resets it)
 let played = false;
 
-const DRAW_SECONDS = 3.6; // time to write the whole signature
+const DRAW_SECONDS = 4; // time to write the whole signature
 const HOLD_MS = 650; // pause on the finished signature
 const LEAVE_MS = 900; // the slide up
 
 const total = SIGNATURE.strokes.reduce((sum, s) => sum + s.len, 0);
+// The pen eases in at the first stroke and eases out at the last (sine curve over the whole signature); inside each stroke the
+// speed is constant, so the line flows from one stroke into the next without stopping.
+const ease = (p: number) => 0.5 - 0.5 * Math.cos(Math.PI * p);
 let cursor = 0;
 const TIMING = SIGNATURE.strokes.map((s) => {
-  const delay = (cursor / total) * DRAW_SECONDS;
-  const dur = Math.max(0.08, (s.len / total) * DRAW_SECONDS);
+  const t0 = ease(cursor / total) * DRAW_SECONDS;
   cursor += s.len;
-  return { delay, dur };
+  const t1 = ease(cursor / total) * DRAW_SECONDS;
+  return { delay: t0, dur: Math.max(0.05, t1 - t0) };
 });
 
 export default function SplashScreen() {
