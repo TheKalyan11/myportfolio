@@ -5888,7 +5888,10 @@ body [disabled] { cursor: not-allowed !important; }
   background: #d1181f;
   cursor: pointer;
   transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+  /* safety net: if scripts never run, the screen still disappears on its own */
+  animation: splash-failsafe 0.01s linear 7s forwards;
 }
+@keyframes splash-failsafe { to { visibility: hidden; pointer-events: none; } }
 .splash.leaving { transform: translateY(-100%); }
 html[data-splash="seen"] .splash { display: none; }
 html.splash-lock, html.splash-lock body { overflow: hidden; }
