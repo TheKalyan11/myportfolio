@@ -5885,7 +5885,7 @@ body [disabled] { cursor: not-allowed !important; }
   z-index: 100010; /* above everything, including the mini-player */
   display: grid;
   place-items: center;
-  background: #173495;
+  background: #16379c;
   cursor: pointer;
   transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
   /* safety net: if scripts never run, the screen still disappears on its own */
