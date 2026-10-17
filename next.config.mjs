@@ -1,7 +1,6 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+// Plain JavaScript (not TypeScript) on purpose: some hosts cannot compile a next.config.ts during the build.
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   images: {
