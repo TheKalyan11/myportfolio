@@ -5551,6 +5551,10 @@ button.dot-close:hover {
 }
 
 /* hero with the gradient and the paste box */
+.dl-gif-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; margin-bottom: 1rem; }
+.dl-gif { position: relative; width: min(30rem, 100%); aspect-ratio: 480 / 269; overflow: hidden; border-radius: 16px; background: rgba(255, 243, 176, 0.12); }
+.dl-gif iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.dl-gif-credit { font-size: 0.65rem; color: inherit; text-decoration: underline; opacity: 0.7; }
 .dl-hero {
   position: relative;
   overflow: hidden;

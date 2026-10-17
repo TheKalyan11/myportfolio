@@ -337,6 +337,25 @@ export default function MediaDownloader({ onClose, mainSiteUrl }: { onClose?: ()
       </header>
 
       <div className="dl-scroll">
+        <div className="dl-gif-wrap">
+          <div className="dl-gif">
+            <iframe
+              src="https://giphy.com/embed/v2JqIt9EQKMFb1bGUh"
+              title="Funny GIF"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+              allowFullScreen
+            />
+          </div>
+          <a
+            className="dl-gif-credit"
+            href="https://giphy.com/gifs/cc0studios-mfer-normal-mfercoin-v2JqIt9EQKMFb1bGUh"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            via GIPHY
+          </a>
+        </div>
         <section className="dl-hero">
           <h2>Paste a link. Pick a format. Download.</h2>
           <p>Your own files and openly licensed media, straight from the source.</p>
