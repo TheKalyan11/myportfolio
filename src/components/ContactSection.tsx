@@ -73,7 +73,14 @@ export default function ContactSection() {
   const bottomVideo = useRef<HTMLVideoElement>(null);
   const [status, setStatus] = useState<"idle" | "opening">("idle");
   const [videoFailed, setVideoFailed] = useState(false);
-  const useVideo = Boolean(SKY_VIDEO) && !videoFailed;
+  // The sky video is about 6.5 MB and two copies play at once, so phones and data-saver visitors get the light
+  // drifting-cloud layers instead. It stays off until the screen is known, so a phone never starts downloading it.
+  const [roomForVideo, setRoomForVideo] = useState(false);
+  useEffect(() => {
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    setRoomForVideo(window.matchMedia("(min-width: 900px) and (hover: hover)").matches && !saveData);
+  }, []);
+  const useVideo = Boolean(SKY_VIDEO) && !videoFailed && roomForVideo;
 
   // Seamless loop. A video that simply loops jumps visibly when it restarts, so two copies play half a clip
   // apart. The bottom copy is always fully visible; the top copy fades out as it nears its end and fades back

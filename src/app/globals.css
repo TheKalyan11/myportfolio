@@ -101,7 +101,7 @@ body {
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
   position: relative;
-  min-height: 100vh;
+  min-height: 100svh;
 }
 
 /* Ambient Background Grid and Lighting */
@@ -366,7 +366,7 @@ body {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100svh;
   min-height: 100svh;
   background: var(--hero-bg);
   color: var(--hero-ink);
@@ -1365,7 +1365,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .svx-track { height: auto; }
-  .svx-stage { position: static; min-height: 100vh; }
+  .svx-stage { position: static; min-height: 100svh; }
   .svx-overlay { display: none; }
   .svx-line > span, .svx-label { transform: none; opacity: 1; transition: none; }
   .svc-body, .svc-cluster { transition: none; }
@@ -1663,7 +1663,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .ct-track { height: auto; }
-  .ct-stage { position: static; min-height: 100vh; }
+  .ct-stage { position: static; min-height: 100svh; }
   .ct-char { opacity: 1; filter: none; transform: none; }
   .ct-sub, .ct-badges { opacity: 1; transform: none; }
 }
@@ -1681,7 +1681,7 @@ body {
   z-index: 1;
   display: grid;
   place-items: center;
-  min-height: 100vh;
+  min-height: 100svh;
   min-height: 100svh;
   padding: clamp(3rem, 9vh, 6rem) var(--cn-pad);
   overflow: hidden;
@@ -2648,7 +2648,7 @@ body {
   --mw-yellow: #f7e84a;
   --mw-brown: rgba(76, 63, 48, 0.9);
   --mw-brown-text: #cbbd98;
-  min-height: 100vh;
+  min-height: 100svh;
   min-height: 100svh;
   background:
     radial-gradient(ellipse at 50% 35%, #d6b995 0%, #b08d6c 48%, #7e6048 100%);
@@ -2700,7 +2700,7 @@ body {
   position: fixed;
   inset: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
   z-index: 99999;
   background: rgba(46, 34, 22, 0.78);
   backdrop-filter: blur(26px);
@@ -2717,8 +2717,8 @@ body {
 .musicwave-inpage-dialog {
   width: 100%;
   max-width: 1380px;
-  height: min(820px, calc(100vh - 2.5rem));
-  max-height: calc(100vh - 2.5rem);
+  height: min(820px, calc(100svh - 2.5rem));
+  max-height: calc(100svh - 2.5rem);
   position: relative;
   display: flex;
   align-items: center;
@@ -2744,7 +2744,7 @@ body {
 .mw-window {
   width: 100%;
   max-width: 1280px;
-  height: min(740px, calc(100vh - 9.5rem));
+  height: min(740px, calc(100svh - 9.5rem));
   min-height: 460px;
   margin-bottom: 5.5rem;
   background: var(--mw-brown);
@@ -2819,11 +2819,11 @@ body {
 .mw-win-btn:focus-visible { outline: 2px solid var(--mw-yellow); outline-offset: 2px; }
 
 /* maximized: the window fills the screen */
-.mw-max .mw-window { max-width: none; height: calc(100vh - 8.5rem); }
+.mw-max .mw-window { max-width: none; height: calc(100svh - 8.5rem); }
 .mw-max.mw-modal-mode .mw-window { height: calc(100% - 5.5rem); }
 .music-app-page:has(.mw-max) { padding: 0.75rem; }
 .musicwave-inpage-overlay:has(.mw-max) { padding: 0.5rem; }
-.musicwave-inpage-dialog:has(.mw-max) { max-width: none; height: calc(100vh - 1rem); max-height: calc(100vh - 1rem); }
+.musicwave-inpage-dialog:has(.mw-max) { max-width: none; height: calc(100svh - 1rem); max-height: calc(100svh - 1rem); }
 
 /* minimized (full page only) */
 .mw-minimized {
@@ -3970,8 +3970,8 @@ body.has-mini-player .ft { padding-bottom: calc(0.85rem + 6.2rem); }
 .music-window-frame {
   width: 100%;
   max-width: 1380px;
-  height: min(820px, calc(100vh - 2.5rem));
-  max-height: calc(100vh - 2.5rem);
+  height: min(820px, calc(100svh - 2.5rem));
+  max-height: calc(100svh - 2.5rem);
   min-height: 480px;
   background: #faf5e4;
   border-radius: clamp(16px, 1.8vw, 26px);
@@ -3988,7 +3988,7 @@ body.has-mini-player .ft { padding-bottom: calc(0.85rem + 6.2rem); }
   position: fixed;
   inset: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
   z-index: 99999;
   background: rgba(10, 8, 7, 0.88);
   backdrop-filter: blur(24px);
@@ -4005,8 +4005,8 @@ body.has-mini-player .ft { padding-bottom: calc(0.85rem + 6.2rem); }
 .musicwave-inpage-dialog {
   width: 100%;
   max-width: 1380px;
-  height: min(820px, calc(100vh - 2.5rem));
-  max-height: calc(100vh - 2.5rem);
+  height: min(820px, calc(100svh - 2.5rem));
+  max-height: calc(100svh - 2.5rem);
   position: relative;
   display: flex;
   align-items: center;
@@ -4024,7 +4024,7 @@ body.has-mini-player .ft { padding-bottom: calc(0.85rem + 6.2rem); }
 
 .musicwave-modal-mode .music-window-frame {
   height: 100%;
-  max-height: calc(100vh - 2.5rem);
+  max-height: calc(100svh - 2.5rem);
   box-shadow: 0 45px 120px -20px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.15);
 }
 
@@ -5439,7 +5439,7 @@ button.dot-close:hover {
   width: 100%;
   max-width: 880px;
   min-width: 0;
-  max-height: min(860px, calc(100vh - 1.5rem));
+  max-height: min(860px, calc(100svh - 1.5rem));
   display: flex;
   flex-direction: column;
   background: rgba(60, 50, 38, 0.97);
@@ -6102,4 +6102,44 @@ html.splash-lock, html.splash-lock body { overflow: hidden; }
 .fpb[aria-pressed="true"] { background-color: hsl(49deg 98% 72%); }
 @media (hover: none) {
   .fpb:hover svg, .fpb:hover .fpb-now, .fpb:hover .fpb-play { transform: none; }
+}
+
+/* ===== Phones: lighter effects, safe areas and a calmer floating button ===== */
+@supports (padding: max(0px)) {
+  .fpb { left: max(0.9rem, env(safe-area-inset-left)); }
+}
+.fpb { bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+body.has-mini-player .fpb { bottom: calc(6.4rem + env(safe-area-inset-bottom, 0px)); }
+
+@media (max-width: 640px) {
+  .fpb { min-height: 40px; padding: 0 12px 0 8px; font-size: 15px; gap: 8px; left: 0.6rem; }
+  .fpb svg { width: 30px; height: 30px; }
+  body.has-mini-player .fpb { bottom: calc(7.2rem + env(safe-area-inset-bottom, 0px)); }
+  .splash-sig { width: min(86vw, 600px); }
+}
+
+/* touch screens and small screens: drop the costliest effects (large blurs, per-letter blur while scrolling) */
+@media (hover: none), (max-width: 768px) {
+  .ct-char { filter: none; will-change: transform, opacity; }
+  .cn-cloud { filter: none; }
+  .cn::before, .cn::after { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .dl-overlay,
+  .musicwave-inpage-overlay { -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .mp { -webkit-backdrop-filter: blur(12px) saturate(1.2); backdrop-filter: blur(12px) saturate(1.2); }
+  .crz-pay-overlay, .crz-joke-overlay { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+/* no hover on touch screens: no sticky hover states */
+@media (hover: none) {
+  .fpb:hover svg, .fpb:hover .fpb-now, .fpb:hover .fpb-play { transform: none; }
+  .crz-key:hover, .crz-pay-btn:hover { transform: none; }
+}
+
+/* text never gets zoomed or cut by the phone's own text sizing */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* comfortable thumb targets in the music bar on phones */
+@media (max-width: 640px) {
+  .mp-ctrl { min-width: 40px; min-height: 40px; }
+  .mp-play { width: 44px; height: 44px; }
 }
