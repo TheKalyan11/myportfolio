@@ -5,9 +5,12 @@ import { SIGNATURE } from "@/data/signature";
 
 /**
  * The opening screen: a red page where the signature writes itself, then the page slides up to reveal the site.
- * It plays once per visit (per browser tab). A small script in the page head (see layout.tsx) marks repeat
- * visits and reduced-motion visitors, so they never see it. Click the screen to skip.
+ * It plays every time the website is opened or reloaded, but not again when moving between pages inside the site.
+ * Visitors who prefer reduced motion never see it (the stylesheet hides it). Click the screen to skip.
  */
+
+// true once it has played in this page load (a full reload resets it)
+let played = false;
 
 const DRAW_SECONDS = 2.8; // time to write the whole signature
 const HOLD_MS = 650; // pause on the finished signature
@@ -24,19 +27,19 @@ const TIMING = SIGNATURE.strokes.map((s) => {
 
 export default function SplashScreen() {
   const [leaving, setLeaving] = useState(false);
-  const [gone, setGone] = useState(false);
+  const [gone, setGone] = useState(() => played);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (root.dataset.splash === "seen") return; // already shown in this tab (or reduced motion)
-    try {
-      sessionStorage.setItem("splash-seen", "1");
-    } catch {
-      // storage can be blocked; the screen then simply shows again on the next visit
+    if (played) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      played = true;
+      return;
     }
+    const root = document.documentElement;
     root.classList.add("splash-lock");
     const t1 = window.setTimeout(() => setLeaving(true), DRAW_SECONDS * 1000 + HOLD_MS);
     const t2 = window.setTimeout(() => {
+      played = true; // marked only when finished, so React dev double-run of this effect still plays it
       setGone(true);
       root.classList.remove("splash-lock");
     }, DRAW_SECONDS * 1000 + HOLD_MS + LEAVE_MS);

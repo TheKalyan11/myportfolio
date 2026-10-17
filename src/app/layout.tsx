@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Archivo, Funnel_Display, Poppins } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { MusicPlayerProvider } from "@/context/MusicPlayerContext";
@@ -32,9 +31,6 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
 });
-
-// Runs before the page paints: repeat visits and reduced-motion visitors skip the opening screen with no flash of red.
-const SPLASH_SKIP = `(function(){try{var seen=sessionStorage.getItem("splash-seen");var calm=window.matchMedia("(prefers-reduced-motion: reduce)").matches;if(seen||calm){document.documentElement.dataset.splash="seen"}}catch(e){}})();`;
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kalyan-portfolio.vercel.app"),
@@ -86,8 +82,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${funnelDisplay.variable} ${poppins.variable}`} suppressHydrationWarning>
       <body>
-        {/* Marks visitors who already saw the opening screen (or prefer reduced motion), before the page paints. */}
-        <Script id="splash-skip" strategy="beforeInteractive">{SPLASH_SKIP}</Script>
         <ThemeProvider>
           <MusicPlayerProvider>
             <div className="bg-grid-ambient" />
