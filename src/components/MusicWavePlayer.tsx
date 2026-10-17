@@ -756,6 +756,25 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
             {/* ── NOTES VIEW ── */}
             {activeNav === "notes" && (
               <div className="mw-section mw-notes">
+                <div className="mw-notes-gif-wrap">
+                  <div className="mw-notes-gif">
+                    <iframe
+                      src="https://giphy.com/embed/xdLH51eNWZAHrwy5mf"
+                      title="Kermit the Frog GIF"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      allowFullScreen
+                    />
+                  </div>
+                  <a
+                    className="mw-favorites-gif-credit"
+                    href="https://giphy.com/gifs/muppetwiki-muppets-kermit-the-frog-xdLH51eNWZAHrwy5mf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    via GIPHY
+                  </a>
+                </div>
                 <article className="mw-note-card">
                   <h2 className="mw-note-title">Important Notice</h2>
                   <p className="mw-note-text">
