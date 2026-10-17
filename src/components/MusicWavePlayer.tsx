@@ -22,8 +22,7 @@ import {
   Globe,
   Clock,
   Sparkles,
-  Radio,
-  FlaskConical
+  Radio
 } from "lucide-react";
 import type { MusicTrack } from "@/app/api/music/search/route";
 import { useMusicPlayer } from "@/context/MusicPlayerContext";
@@ -632,7 +631,15 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
               <span className="mw-live-dot" />
               <span>MusicWave Live • Free Streaming</span>
             </div>
-            <p className="mw-side-note">Many more features are available only in the app.</p>
+            <div className="mw-side-note">
+              <p>
+                😂 <strong>Warning: Crazy Features Ahead!</strong>
+              </p>
+              <p>This website is already crazy enough! More madness is coming soon. 🤪❤️</p>
+              <p>
+                <strong>Crafted with ❤️ by Kalyan — professionally unserious since day one!</strong> 😂
+              </p>
+            </div>
           </aside>
 
           {/* Main Content */}
@@ -718,9 +725,23 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
             {/* ── FAVORITES VIEW ── */}
             {activeNav === "favorites" && (
               <div className="mw-favorites-page">
-                <div className="mw-favorites-icon">
-                  <FlaskConical size={48} strokeWidth={1.5} />
+                <div className="mw-favorites-gif">
+                  <iframe
+                    src="https://giphy.com/embed/Fn0ysbG90HX0uj5shv"
+                    title="Funny dog GIF"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    allowFullScreen
+                  />
                 </div>
+                <a
+                  className="mw-favorites-gif-credit"
+                  href="https://giphy.com/gifs/dogs-of-instagram-lunch-tre-viral-dog-Fn0ysbG90HX0uj5shv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  via GIPHY
+                </a>
                 <h2 className="mw-favorites-title">Favorites — Coming Soon</h2>
                 <p className="mw-favorites-subtitle">Currently under testing</p>
                 <p className="mw-favorites-desc">

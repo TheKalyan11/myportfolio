@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, Play, Pause, Sparkles, Gamepad2, Disc3 } from "lucide-react";
+import CrazyCalculator from "@/components/CrazyCalculator";
 import MusicWavePlayer from "@/components/MusicWavePlayer";
 import MediaDownloader from "@/components/MediaDownloader";
 
@@ -22,9 +23,6 @@ interface ExploreItem {
   tags: string[];
   features: string[];
 }
-
-// Where the Games card sends visitors.
-const GAMES_URL = "https://quiz.bato.dev/";
 
 const EXPLORE_ITEMS: ExploreItem[] = [
   {
@@ -76,9 +74,9 @@ const EXPLORE_ITEMS: ExploreItem[] = [
     pillColor: "#2a170f",
     cardBg: "#bfaee9",
     title: "GAMES",
-    subtitle: "PLAY",
+    subtitle: "CRAZY CALCULATOR",
     image: "/explore/games.jpg",
-    description: "Curated collection of retro arcade browser games and WebGL experiments including pixel platformers, 3D micro-racers, and nostalgic 8-bit adventures.",
+    description: "A joke calculator that always gives ridiculous, wrong answers. Nothing is ever charged.",
     tags: ["WebGL", "PixiJS", "Game Loop", "Audio FX"],
     features: [
       "60 FPS hardware-accelerated canvas rendering",
@@ -92,15 +90,15 @@ const EXPLORE_ITEMS: ExploreItem[] = [
 export default function ExploreSection() {
   const [activeModalItem, setActiveModalItem] = useState<ExploreItem | null>(null);
 
-  // What a card does when opened: the music card opens the player, the games card goes to the quiz site
-  // (in a new tab, so the portfolio stays open), and the others show their preview window.
+  // What a card does when opened: the music card opens the player, the games card opens the Crazy Calculator, and the others show their preview window.
   const openItem = (item: ExploreItem) => {
     if (item.id === "music-player") setIsMusicPlayerOpen(true);
     else if (item.id === "youtube-downloader") setIsDownloaderOpen(true);
-    else if (item.id === "games") window.open(GAMES_URL, "_blank", "noopener,noreferrer");
+    else if (item.id === "games") setIsCalcOpen(true);
     else setActiveModalItem(item);
   };
   const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
+  const [isCalcOpen, setIsCalcOpen] = useState(false);
   // The Media Downloader also opens straight from a link such as https://your-site/?open=media-downloader
   // (the "Open in main website" button of the standalone downloader uses it).
   const [isDownloaderOpen, setIsDownloaderOpen] = useState(
@@ -131,16 +129,17 @@ export default function ExploreSection() {
       if (e.key === "Escape") {
         if (isMusicPlayerOpen) setIsMusicPlayerOpen(false);
         if (isDownloaderOpen) setIsDownloaderOpen(false);
+        if (isCalcOpen) setIsCalcOpen(false);
         if (activeModalItem) setActiveModalItem(null);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isMusicPlayerOpen, isDownloaderOpen, activeModalItem]);
+  }, [isMusicPlayerOpen, isDownloaderOpen, isCalcOpen, activeModalItem]);
 
   // Lock body scroll when in-page music player modal is active
   useEffect(() => {
-    if (isMusicPlayerOpen || isDownloaderOpen) {
+    if (isMusicPlayerOpen || isDownloaderOpen || isCalcOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -148,7 +147,7 @@ export default function ExploreSection() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMusicPlayerOpen, isDownloaderOpen]);
+  }, [isMusicPlayerOpen, isDownloaderOpen, isCalcOpen]);
 
   return (
     <section id="explore" className="explore-section" aria-label="Explore Projects and Experiments">
@@ -343,6 +342,14 @@ export default function ExploreSection() {
               </div>
             </div>
           </div>
+        </div>,
+        document.body
+      )}
+
+      {/* Crazy Calculator window */}
+      {mounted && isCalcOpen && createPortal(
+        <div className="dl-overlay" onClick={() => setIsCalcOpen(false)}>
+          <CrazyCalculator onClose={() => setIsCalcOpen(false)} />
         </div>,
         document.body
       )}
