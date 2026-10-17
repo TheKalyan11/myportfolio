@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Play,
   Pause,
@@ -249,14 +250,28 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
   const [activeLanguage, setActiveLanguage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"trending" | "new" | "shuffle">("trending");
   const [isMaximized, setIsMaximized] = useState<boolean>(false);
-  const [isMinimized, setIsMinimized] = useState<boolean>(false);
 
-  // Minimize: the pop-up closes, or on the full page the window folds away. Either way the song keeps playing
-  // and the fixed mini-player stays at the bottom.
+  // Back to where the visitor came from (same scroll position, not the top of a section). If this page was opened
+  // directly, there is nothing to go back to, so it falls back to the home page.
+  const router = useRouter();
+  const canGoBack = () => {
+    try {
+      return window.history.length > 1 && window.sessionStorage.getItem("mw-came-from-site") === "1";
+    } catch {
+      return false;
+    }
+  };
+  const goBack = () => {
+    if (canGoBack()) router.back();
+    else router.push("/");
+  };
+
+  // Minimize: the pop-up closes, or on the full page it returns to the page you came from. Either way the song
+  // keeps playing and the fixed mini-player stays at the bottom.
   const minimize = () => {
     player.pin(); // the controls stay on screen, with or without a song chosen yet
     if (onClose) onClose();
-    else setIsMinimized(true);
+    else goBack();
   };
 
   // Cover art for the Top Artists row, looked up from the music library so each portrait is a real, loading image.
@@ -451,22 +466,6 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
     </div>
   );
 
-  if (isMinimized) {
-    return (
-      <div className="mw-container">
-        <div className="mw-minimized">
-          <Radio size={22} />
-          <h2>MusicWave is minimized</h2>
-          <p>Your music keeps playing in the player at the bottom of the screen.</p>
-          <button type="button" className="mw-restore-btn" onClick={() => setIsMinimized(false)}>
-            <Maximize2 size={14} />
-            Open MusicWave
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={`mw-container ${isModal ? "mw-modal-mode" : ""} ${isMaximized ? "mw-max" : ""}`}>
       {/* Toast */}
@@ -539,7 +538,16 @@ export default function MusicWavePlayer({ onClose, isModal = false }: MusicWaveP
                 <span>Close</span>
               </button>
             ) : (
-              <Link href="/#explore" className="mw-back-link">
+              <Link
+                href="/"
+                className="mw-back-link"
+                onClick={(e) => {
+                  if (canGoBack()) {
+                    e.preventDefault();
+                    router.back();
+                  }
+                }}
+              >
                 <ArrowLeft size={13} />
                 <span>Portfolio</span>
               </Link>

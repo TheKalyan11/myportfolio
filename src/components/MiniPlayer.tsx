@@ -168,7 +168,20 @@ export default function MiniPlayer() {
           aria-label="Volume"
         />
         {viewCount === 0 && (
-          <Link href="/music" className="mp-ctrl mp-max" aria-label="Open the full MusicWave player" title="Open full player">
+          <Link
+            href="/music"
+            className="mp-ctrl mp-max"
+            aria-label="Open the full MusicWave player"
+            title="Open full player"
+            onClick={() => {
+              // lets the full player's "Portfolio" button return to this exact spot instead of the top of a section
+              try {
+                window.sessionStorage.setItem("mw-came-from-site", "1");
+              } catch {
+                /* storage blocked: Portfolio then opens the home page */
+              }
+            }}
+          >
             <Maximize2 size={16} />
           </Link>
         )}
