@@ -12,7 +12,7 @@ import { SIGNATURE } from "@/data/signature";
 // true once it has played in this page load (a full reload resets it)
 let played = false;
 
-const DRAW_SECONDS = 2.8; // time to write the whole signature
+const DRAW_SECONDS = 3.6; // time to write the whole signature
 const HOLD_MS = 650; // pause on the finished signature
 const LEAVE_MS = 900; // the slide up
 

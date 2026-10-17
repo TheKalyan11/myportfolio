@@ -5904,7 +5904,7 @@ html.splash-lock, html.splash-lock body { overflow: hidden; }
   stroke-linejoin: round;
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: splash-draw var(--dur) cubic-bezier(0.45, 0.05, 0.3, 1) var(--delay) both;
+  animation: splash-draw var(--dur) linear var(--delay) both;
 }
 @keyframes splash-draw {
   0%   { stroke-dashoffset: 1; opacity: 0; }
