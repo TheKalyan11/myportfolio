@@ -2,6 +2,9 @@
 
 export const EMAIL = "heykalyan.dev@gmail.com";
 
+// A second address, shown next to the first in the footer and under the contact form.
+export const EMAIL_ALT = "kalyan110323@gmail.com";
+
 // Shown in the footer. Leave it empty to hide it.
 export const PHONE = "+91 91008 89955";
 

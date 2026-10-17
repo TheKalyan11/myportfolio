@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { EMAIL } from "@/data/contact"; // where messages go; edit it in src/data/contact.ts
+import { EMAIL, EMAIL_ALT } from "@/data/contact"; // where messages go; edit it in src/data/contact.ts
 
 
 // Sky video in /public (a free-to-use Pexels clip), looped without a visible restart (see the effect below).
@@ -197,7 +197,7 @@ export default function ContactSection() {
           Let&apos;s build something
         </h2>
         <p className="cn-write">
-          Or just write: <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+          Or just write: <a href={`mailto:${EMAIL}`}>{EMAIL}</a> or <a href={`mailto:${EMAIL_ALT}`}>{EMAIL_ALT}</a>
         </p>
 
         <form className="cn-form" onSubmit={onSubmit}>

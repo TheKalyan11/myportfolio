@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react";
-import { CITY, EMAIL, PHONE, SOCIALS } from "@/data/contact";
+import { CITY, EMAIL, EMAIL_ALT, PHONE, SOCIALS } from "@/data/contact";
 import { INDIA_OUTLINE } from "@/data/indiaOutline";
 
 const INK = "#0a0a0a";
@@ -336,6 +336,10 @@ export default function FooterSection() {
             <div className="ft-row">
               <span>{EMAIL}</span>
               <CopyButton text={EMAIL} label="Copy email address" />
+            </div>
+            <div className="ft-row">
+              <span>{EMAIL_ALT}</span>
+              <CopyButton text={EMAIL_ALT} label="Copy second email address" />
             </div>
             {PHONE && (
               <div className="ft-row">
