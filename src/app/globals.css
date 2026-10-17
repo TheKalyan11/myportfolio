@@ -1713,6 +1713,27 @@ body {
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 40%, transparent 100%);
 }
+/* The same soft blurred fade at the bottom, from the sky into the light footer. */
+.cn::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: clamp(9rem, 28vh, 17rem);
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    #efeeeb 0%,
+    rgba(239, 238, 235, 0.8) 20%,
+    rgba(239, 238, 235, 0.42) 50%,
+    rgba(239, 238, 235, 0.14) 78%,
+    rgba(239, 238, 235, 0) 100%
+  );
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+  -webkit-mask-image: linear-gradient(to top, #000 0%, #000 40%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0%, #000 40%, transparent 100%);
+}
 .cn-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* the top copy starts hidden; ContactSection.tsx fades it in and out around its loop point */
 .cn-video-top { opacity: 0; }
