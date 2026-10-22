@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { BadgeCheck, Layers } from "lucide-react";
-import { siShopify, siWebflow } from "simple-icons";
+import { BadgeCheck, Code2, Layers } from "lucide-react";
+import { siFlutter } from "simple-icons";
 import { prefersReducedMotion } from "@/lib/motion";
 
-const LINES = ["Certifications", "& Partnerships"];
+const LINES = ["Certifications"];
 
 // Each line split into letters, numbered across both lines (spaces get -1), worked out once.
 const LINE_CHARS = (() => {
@@ -15,12 +15,13 @@ const LINE_CHARS = (() => {
 
 type Badge = { label: string; brand?: { path: string; hex: string }; image?: string; custom?: React.ReactNode };
 
-// Only certifications you have told me you hold. Edit the labels if your exact titles differ
-// (for example, the names of your AWS and Full-Stack certifications).
+// HOW TO ADD YOUR OWN: copy one line below, paste it at the end of the list and change the label.
+// The simplest form needs only a label and shows a check-mark badge:
+//   { label: "Meta React Developer" },
+// To show a logo instead, add `brand: siReact` (any icon from "simple-icons", imported above)
+// or `image: "/logos/yourlogo.svg"` (a file in /public/logos).
+// Only list certifications you really hold.
 const BADGES: Badge[] = [
-  { label: "Webflow Certified Partner", brand: siWebflow },
-  { label: "Shopify Partner", brand: siShopify },
-  { label: "AWS Certified", image: "/logos/aws.svg" },
   // a credential rather than a brand: a stack of layers (the "stack" in full-stack) with a verified check
   {
     label: "Full-Stack Certified",
@@ -31,6 +32,9 @@ const BADGES: Badge[] = [
       </span>
     ),
   },
+  { label: "Full-Stack Web Development Program", custom: <Code2 className="ct-plain-check" strokeWidth={2} aria-hidden /> },
+  { label: "Flutter Certified", brand: siFlutter },
+  { label: "AWS Certified", image: "/logos/aws.svg" },
 ];
 
 // Deterministic "random" numbers, so the server and the browser scatter the letters identically.
@@ -88,7 +92,7 @@ export default function CertificationsSection() {
     <section id="certifications" className="ct" aria-labelledby="ct-heading">
       <div ref={track} className="ct-track">
         <div ref={stage} className="ct-stage">
-          <h2 id="ct-heading" className="ct-title" aria-label="Certifications & Partnerships">
+          <h2 id="ct-heading" className="ct-title" aria-label="Certifications">
             {LINE_CHARS.map((chars, li) => (
               <span key={LINES[li]} className="ct-line" aria-hidden>
                 {chars.map(({ ch, i }, j) => {
@@ -128,7 +132,7 @@ export default function CertificationsSection() {
                   // eslint-disable-next-line @next/next/no-img-element -- a small static logo file
                   <img src={b.image} alt="" />
                 ) : (
-                  b.custom ?? null
+                  b.custom ?? <BadgeCheck className="ct-plain-check" strokeWidth={2.2} aria-hidden />
                 )}
                 {b.label}
               </li>

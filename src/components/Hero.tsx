@@ -1,19 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { Mascot } from "page-mascot";
 import { X } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
 import CursorTrail from "@/components/CursorTrail";
 import { EMAIL } from "@/data/contact";
+import { scrollToSection } from "@/lib/scrollToSection";
 
-// Each tag jumps to the section of this page that covers it.
+// Skill tags: they only react to the pointer (hover), they do not link anywhere.
 const TAGS = [
-  { label: "Web & Mobile Apps", target: "#selected-projects" },
-  { label: "AWS Cloud Infrastructure", target: "#tech-stack" },
-  { label: "LLM Solutions & Agents", target: "#tech-stack" },
-  { label: "Full-Stack Architecture", target: "#services" },
-  { label: "Next.js & React 19", target: "#tech-stack" },
+  { label: "Web & Mobile Apps" },
+  { label: "AWS Cloud Infrastructure" },
+  { label: "LLM Solutions & Agents" },
+  { label: "Full-Stack Architecture" },
+  { label: "Next.js & React 19" },
 ];
 
 // One entry for each section of the page, in page order.
@@ -27,12 +29,26 @@ const NAV_LINKS = [
   { number: "07", label: "Contact", href: "#contact" },
 ];
 
+// The title's font size is clamp(4.4rem, 9.8vw, 10.2rem) with a line height of 0.85, so the mascot is sized from one title line (the drawing has some empty margin, hence the 2).
+const mascotSizeFor = (viewportWidth: number) => {
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const font = Math.min(Math.max(viewportWidth * 0.098, 4.4 * rem), 10.2 * rem);
+  return Math.round(font * 0.85 * 2);
+};
+
 const MARQUEE_ITEMS = TAGS.map((t) => t.label);
 
 export default function Hero() {
   const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [mascotSize, setMascotSize] = useState(64);
+
+  useEffect(() => {
+    const fit = () => setMascotSize(mascotSizeFor(window.innerWidth));
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, []);
 
   return (
     <section id="about" className="hero">
@@ -66,14 +82,25 @@ export default function Hero() {
         </div>
 
         <div className="hero-copy">
-          <h1 className="hero-title">
-            <span className="hero-line">
-              <span>THE</span>
-            </span>
-            <span className="hero-line">
-              <span>KALYAN</span>
-            </span>
-          </h1>
+          <div className="hero-title-row">
+            <h1 className="hero-title">
+              <span className="hero-line">
+                <span>THE</span>
+              </span>
+              <span className="hero-line">
+                <span>KALYAN</span>
+              </span>
+            </h1>
+            {/* Stands between THE and KALYAN, to the right of THE. It follows the pointer and blinks when poked (sheets are in /public/mascots). */}
+            <div className="hero-mascot">
+              <Mascot
+                directions="/mascots/crt-directions.webp"
+                reactions="/mascots/crt-reactions.webp"
+                size={mascotSize}
+                label="Mascot that follows your cursor"
+              />
+            </div>
+          </div>
 
           <p className="hero-lede">
             <strong>Full Stack Developer</strong> · Web &amp; Mobile Apps, AWS, and LLM Solutions.
@@ -84,14 +111,7 @@ export default function Hero() {
           <ul className="hero-tags">
             {TAGS.map((tag) => (
               <li key={tag.label}>
-                <a
-                  href={tag.target}
-                  className="hero-tag"
-                  aria-current={selectedTag === tag.label}
-                  onClick={() => setSelectedTag(tag.label)}
-                >
-                  {tag.label}
-                </a>
+                <span className="hero-tag">{tag.label}</span>
               </li>
             ))}
           </ul>
@@ -134,7 +154,10 @@ export default function Hero() {
                 key={item.number}
                 href={item.href}
                 className="hero-menu-link"
-                onClick={() => setMenuOpen(false)}
+                onClick={(e) => {
+                  setMenuOpen(false);
+                  if (scrollToSection(item.href)) e.preventDefault();
+                }}
               >
                 <span style={{ fontSize: "1rem", opacity: 0.45 }}>{item.number}</span>
                 <span>{item.label}</span>

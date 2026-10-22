@@ -10,9 +10,8 @@ Built with Next.js, React and TypeScript, with scroll-driven animations and a fe
 - **Explore Some Crazy**
   - **MusicWave:** a music player with search, languages, a floating mini-player that keeps playing across pages,
     and Media Session controls.
-  - **Media Downloader:** a secure downloader for audio and video you own or that is openly licensed
-    (Internet Archive, Wikimedia Commons, direct files), with real progress. It refuses YouTube and other streaming
-    platforms.
+  - **Pixel Studio:** a pixel-art maker (pencil, eraser, fill, color picker, mirror mode, undo and redo) that runs
+    in the browser and saves your drawing as a PNG.
   - **Games:** links to an external quiz site.
 - **Contact form** over a looping sky video, and a **footer** with a dotted name, a map of India with a live clock,
   and a race-car video.

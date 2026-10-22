@@ -48,6 +48,7 @@ export const metadata: Metadata = {
     "AI Agent Platforms",
     "Cloud Architecture",
     "Hyderabad Software Engineer",
+    "Open Source Contributor",
   ],
   authors: [{ name: "Kalyan" }],
   openGraph: {

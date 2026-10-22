@@ -6,11 +6,11 @@ import Image from "next/image";
 import { X, Play, Pause, Sparkles, Gamepad2, Disc3 } from "lucide-react";
 import CrazyCalculator from "@/components/CrazyCalculator";
 import MusicWavePlayer from "@/components/MusicWavePlayer";
-import MediaDownloader from "@/components/MediaDownloader";
+import PixelStudio from "@/components/PixelStudio";
 
 interface ExploreItem {
   id: string;
-  category: "music" | "videos" | "games";
+  category: "music" | "creative" | "games";
   categoryLabel: string;
   countBadge: string;
   pillBg: string;
@@ -46,23 +46,23 @@ const EXPLORE_ITEMS: ExploreItem[] = [
     ]
   },
   {
-    id: "youtube-downloader",
-    category: "videos",
-    categoryLabel: "VIDEOS",
+    id: "pixel-studio",
+    category: "creative",
+    categoryLabel: "CREATIVE",
     countBadge: "02+",
-    pillBg: "#fdb5cc",
+    pillBg: "#ffffff",
     pillColor: "#2a170f",
-    cardBg: "#fca7c2",
-    title: "MEDIA DOWNLOADER",
-    subtitle: "VIDEO & AUDIO",
-    image: "/explore/youtube-downloader.jpg",
-    description: "Paste a link to a file you own, or an Internet Archive or Wikimedia Commons page, and download its audio and video in the formats and qualities the source really offers, with live progress and clear errors.",
-    tags: ["Next.js API", "Streaming proxy", "SSRF protection", "TypeScript"],
+    cardBg: "#e9e9e9",
+    title: "PIXEL STUDIO",
+    subtitle: "PIXEL ART MAKER",
+    image: "/explore/pixel-studio.svg",
+    description: "Draw your own pixel art right in the page: pick colors, fill shapes, mirror your strokes, and save the result as a crisp PNG. It all runs on your device and nothing is uploaded.",
+    tags: ["Canvas API", "Pointer Events", "React", "TypeScript"],
     features: [
-      "Reads titles, thumbnails, durations and formats from each source's own API",
-      "Real download progress measured from the streamed bytes",
-      "Server-side checks: https only, no private networks, audio and video only, size limit",
-      "YouTube and streaming platforms are refused, so only authorized content is downloaded"
+      "Pencil, eraser, flood fill and color picker with keyboard shortcuts",
+      "Mirror mode, 16, 24 and 32 pixel canvases, and a 60-step undo and redo",
+      "Touch, pen and mouse drawing through one set of pointer events",
+      "Exports a sharp, transparent PNG on the visitor's own device"
     ]
   },
   {
@@ -93,28 +93,14 @@ export default function ExploreSection() {
   // What a card does when opened: the music card opens the player, the games card opens the Crazy Calculator, and the others show their preview window.
   const openItem = (item: ExploreItem) => {
     if (item.id === "music-player") setIsMusicPlayerOpen(true);
-    else if (item.id === "youtube-downloader") setIsDownloaderOpen(true);
+    else if (item.id === "pixel-studio") setIsPixelOpen(true);
     else if (item.id === "games") setIsCalcOpen(true);
     else setActiveModalItem(item);
   };
   const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
-  // The Media Downloader also opens straight from a link such as https://your-site/?open=media-downloader
-  // (the "Open in main website" button of the standalone downloader uses it).
-  const [isDownloaderOpen, setIsDownloaderOpen] = useState(
-    () => typeof window !== "undefined" && new URLSearchParams(window.location.search).get("open") === "media-downloader",
-  );
+  const [isPixelOpen, setIsPixelOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-
-  // Once the downloader is closed, drop "?open=media-downloader" from the address so a refresh doesn't reopen it.
-  useEffect(() => {
-    if (isDownloaderOpen) return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("open") !== "media-downloader") return;
-    params.delete("open");
-    const query = params.toString();
-    window.history.replaceState(null, "", window.location.pathname + (query ? "?" + query : "") + window.location.hash);
-  }, [isDownloaderOpen]);
 
   // Audio simulation state for Music Player modal
   const [isPlaying, setIsPlaying] = useState(false);
@@ -128,18 +114,18 @@ export default function ExploreSection() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (isMusicPlayerOpen) setIsMusicPlayerOpen(false);
-        if (isDownloaderOpen) setIsDownloaderOpen(false);
+        if (isPixelOpen) setIsPixelOpen(false);
         if (isCalcOpen) setIsCalcOpen(false);
         if (activeModalItem) setActiveModalItem(null);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isMusicPlayerOpen, isDownloaderOpen, isCalcOpen, activeModalItem]);
+  }, [isMusicPlayerOpen, isPixelOpen, isCalcOpen, activeModalItem]);
 
   // Lock body scroll when in-page music player modal is active
   useEffect(() => {
-    if (isMusicPlayerOpen || isDownloaderOpen || isCalcOpen) {
+    if (isMusicPlayerOpen || isPixelOpen || isCalcOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -147,7 +133,7 @@ export default function ExploreSection() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMusicPlayerOpen, isDownloaderOpen, isCalcOpen]);
+  }, [isMusicPlayerOpen, isPixelOpen, isCalcOpen]);
 
   return (
     <section id="explore" className="explore-section" aria-label="Explore Projects and Experiments">
@@ -354,10 +340,10 @@ export default function ExploreSection() {
         document.body
       )}
 
-      {/* MusicWave-style Video Downloader window (portalled to document.body) */}
-      {mounted && isDownloaderOpen && createPortal(
-        <div className="dl-overlay" onClick={() => setIsDownloaderOpen(false)}>
-          <MediaDownloader onClose={() => setIsDownloaderOpen(false)} />
+      {/* Pixel Studio window (portalled to document.body) */}
+      {mounted && isPixelOpen && createPortal(
+        <div className="dl-overlay" onClick={() => setIsPixelOpen(false)}>
+          <PixelStudio onClose={() => setIsPixelOpen(false)} />
         </div>,
         document.body
       )}
