@@ -36,6 +36,8 @@ interface MusicPlayerValue {
 
   togglePlay: () => void;
   playFromList: (list: MusicTrack[], index: number) => void;
+  /** Looks up songs for a search (for example a language) and starts playing the first one. */
+  playQuery: (query: string) => Promise<void>;
   next: () => void;
   prev: () => void;
   seekTo: (fraction: number) => void;
@@ -86,6 +88,8 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestedTracks = useRef(false);
   const errorStreak = useRef(0);
+  // Counts the "play these songs" requests. Stopping or choosing another song bumps it, so a search that finishes late does not start playing.
+  const playToken = useRef(0);
 
   // Latest values for the audio event handlers, which are attached once.
   const live = useRef({ queue, queueIndex, repeatMode, isShuffle, tracks });
@@ -134,6 +138,30 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
       .catch(() => setIsPlaying(false));
   }, []);
 
+  const playQuery = useCallback(
+    async (query: string) => {
+      const token = ++playToken.current;
+      setIsLoading(true);
+      try {
+        const res = await fetch(`/api/music/search?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        if (token !== playToken.current) return; // stopped or replaced while searching
+        if (data.results && data.results.length > 0) {
+          setTracks(data.results);
+          startAt(data.results, 0);
+        } else {
+          showToast("Could not find songs right now");
+        }
+      } catch (err) {
+        console.error("Failed to load music:", err);
+        showToast("Could not load songs right now");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [startAt, showToast],
+  );
+
   const pickNext = useCallback((direction: 1 | -1) => {
     const { queue: q, queueIndex: i, isShuffle: shuffle } = live.current;
     if (q.length === 0) return -1;
@@ -165,6 +193,7 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
       const audio = audioRef.current;
       const track = list[index];
       if (!track) return;
+      playToken.current++;
       const { queue: q, queueIndex: i } = live.current;
       // choosing the song that is already playing toggles it
       if (audio && q[i] && q[i].id === track.id && q[i].title === track.title && audio.src) {
@@ -236,6 +265,7 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   const pin = useCallback(() => setPinned(true), []);
 
   const stop = useCallback(() => {
+    playToken.current++;
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
@@ -379,6 +409,7 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
       repeatMode,
       togglePlay,
       playFromList,
+      playQuery,
       next,
       prev,
       seekTo,
@@ -413,6 +444,7 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
       repeatMode,
       togglePlay,
       playFromList,
+      playQuery,
       next,
       prev,
       seekTo,
