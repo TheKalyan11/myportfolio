@@ -6,7 +6,15 @@ import { CITY, EMAIL, EMAIL_ALT, PHONE, SOCIALS, WHATSAPP_URL } from "@/data/con
 import { INDIA_OUTLINE } from "@/data/indiaOutline";
 import { prefersReducedMotion } from "@/lib/motion";
 
-const INK = "#0a0a0a";
+const INK = "#0a0a0a"; // fallback; the real colour comes from the --ft-dot CSS variable so the dark theme can change it
+const inkOf = (el: Element) => getComputedStyle(el).getPropertyValue("--ft-dot").trim() || INK;
+
+// calls `fn` whenever the light/dark theme changes; returns the clean-up
+const onThemeChange = (fn: () => void) => {
+  const mo = new MutationObserver(fn);
+  mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  return () => mo.disconnect();
+};
 const ACCENT = "#d1181f";
 const NAME = "THE KALYAN";
 
@@ -35,6 +43,7 @@ function DotWord({ text }: { text: string }) {
     let pointer: { x: number; y: number } | null = null;
     let width = 0;
     let height = 0;
+    let dotInk = inkOf(box);
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
@@ -46,7 +55,7 @@ function DotWord({ text }: { text: string }) {
           near = Math.max(0, 1 - dist / reach);
         }
         const size = cell * (0.62 + 0.3 * near);
-        ctx.fillStyle = near > 0.05 ? ACCENT : INK;
+        ctx.fillStyle = near > 0.05 ? ACCENT : dotInk;
         ctx.fillRect(d.x - size / 2, d.y - size / 2, size, size);
       }
     };
@@ -55,6 +64,7 @@ function DotWord({ text }: { text: string }) {
       const dpr = window.devicePixelRatio || 1;
       width = box.clientWidth;
       if (!width) return;
+      dotInk = inkOf(box); // read again on every build, so a theme that changed while the page was loading is picked up
       const family = getComputedStyle(box).fontFamily;
 
       // The letters keep their natural shape at a modest size and are spaced out to span the full width.
@@ -118,7 +128,12 @@ function DotWord({ text }: { text: string }) {
     document.fonts.ready.then(build);
     box.addEventListener("pointermove", onMove);
     box.addEventListener("pointerleave", onLeave);
+    const stopTheme = onThemeChange(() => {
+      dotInk = inkOf(box);
+      draw();
+    });
     return () => {
+      stopTheme();
       ro.disconnect();
       box.removeEventListener("pointermove", onMove);
       box.removeEventListener("pointerleave", onLeave);
@@ -205,7 +220,7 @@ function DotMap() {
       const step = Math.max(5, Math.round(mapH / 52));
       const rowH = step * 0.86;
       const r = step * 0.34;
-      ctx.fillStyle = INK;
+      ctx.fillStyle = inkOf(box);
       let row = 0;
       for (let y = offY; y <= offY + mapH; y += rowH, row++) {
         const lat = maxLat - (y - offY) / scale;
@@ -226,7 +241,11 @@ function DotMap() {
     const ro = new ResizeObserver(build);
     ro.observe(box);
     build();
-    return () => ro.disconnect();
+    const stopTheme = onThemeChange(build);
+    return () => {
+      stopTheme();
+      ro.disconnect();
+    };
   }, []);
 
   return (

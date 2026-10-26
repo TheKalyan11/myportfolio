@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { MusicPlayerProvider } from "@/context/MusicPlayerContext";
 import MiniPlayer from "@/components/MiniPlayer";
 import FloatingPlayButton from "@/components/FloatingPlayButton";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -84,6 +85,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${funnelDisplay.variable} ${poppins.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Sets the light or dark theme before the page paints (saved choice, otherwise the device setting), so there is no flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{var t=localStorage.getItem('portfolio_theme');if(t!=='dark'&&t!=='light'){t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.setAttribute('data-theme',t)}catch(e){document.documentElement.setAttribute('data-theme','light')}})();",
+          }}
+        />
+      </head>
       <body>
         <ThemeProvider>
           <MusicPlayerProvider>
@@ -91,6 +101,7 @@ export default function RootLayout({
             {children}
             <MiniPlayer />
             <FloatingPlayButton />
+            <ThemeToggle />
           </MusicPlayerProvider>
         </ThemeProvider>
       </body>

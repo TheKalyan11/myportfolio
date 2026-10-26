@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useMusicPlayer } from "@/context/MusicPlayerContext";
 
@@ -10,6 +11,28 @@ import { useMusicPlayer } from "@/context/MusicPlayerContext";
 export default function FloatingPlayButton() {
   const p = useMusicPlayer();
   const pathname = usePathname();
+  const [inFooter, setInFooter] = useState(false);
+
+  // The button steps out of the way while the footer is on screen (the footer has its own contact buttons).
+  useEffect(() => {
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      const footer = document.getElementById("footer");
+      setInFooter(!!footer && footer.getBoundingClientRect().top < window.innerHeight * 0.9);
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(check);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
 
   // the /music page is the full player already
   if (pathname === "/music") return null;
@@ -27,7 +50,7 @@ export default function FloatingPlayButton() {
   };
 
   return (
-    <label className="fpt">
+    <label className={`fpt${inFooter ? " fpt-away" : ""}`}>
       <input
         type="checkbox"
         className="fpt-input"

@@ -649,6 +649,7 @@ body {
   --intro-ink: #0a0a0a;
   --intro-dim: #cbc7bd;
   --intro-rule: #b8b5b0;
+  --intro-red: #c9141c;
   --intro-pad: clamp(1.5rem, 4.5vw, 4rem);
 
   position: relative;
@@ -6014,11 +6015,11 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 
 /* ===== Floating "Play / Playing" toggle on the left edge: opens the music player controls only ===== */
 .fpt {
-  --width: 150px;
-  --height: 60px;
-  --padding: 8px;
-  --border-radius: 24px;
-  --dot-size: 8px;
+  --width: 112px;
+  --height: 44px;
+  --padding: 6px;
+  --border-radius: 18px;
+  --dot-size: 7px;
   --btn-color: #000000;
   --hue: 14deg;
   --animation-duration: 1.2s;
@@ -6049,6 +6050,8 @@ body.has-mini-player .fpt { bottom: calc(6.4rem + env(safe-area-inset-bottom, 0p
 /* The floating button and the music bar stay hidden while the opening screen is playing, and fade in once it has gone */
 .fpt, .mp { transition: opacity 0.6s ease, visibility 0s; }
 html.splash-lock .fpt, html.splash-lock .mp { opacity: 0; visibility: hidden; pointer-events: none; transition: none; }
+/* hidden while the footer is on screen */
+.fpt.fpt-away { opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.35s ease, visibility 0s linear 0.35s; }
 .fpt-input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; z-index: 5; cursor: pointer; }
 .fpt-btn {
   position: relative;
@@ -6074,7 +6077,7 @@ html.splash-lock .fpt, html.splash-lock .mp { opacity: 0; visibility: hidden; po
   position: absolute;
   font-family: var(--font-poppins), "Montserrat", "Manrope", sans-serif;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 13px;
   color: rgba(255, 255, 255, 0.78);
   transition: opacity 0.2s ease;
 }
@@ -6120,8 +6123,8 @@ html.splash-lock .fpt, html.splash-lock .mp { opacity: 0; visibility: hidden; po
     0 0 32px 2px hsla(var(--hue), 50%, 50%, 0.5) inset;
 }
 @media (max-width: 640px) {
-  .fpt { --width: 122px; --height: 50px; --padding: 6px; --border-radius: 20px; left: max(0.6rem, env(safe-area-inset-left)); }
-  .fpt-txt { font-size: 14px; }
+  .fpt { --width: 94px; --height: 38px; --padding: 5px; --border-radius: 16px; --dot-size: 6px; left: max(0.6rem, env(safe-area-inset-left)); }
+  .fpt-txt { font-size: 12px; }
   body.has-mini-player .fpt { bottom: calc(7.2rem + env(safe-area-inset-bottom, 0px)); }
 }
 @media (hover: none) {
@@ -6420,4 +6423,101 @@ a.os-card:hover .os-arrow { transform: translate(3px, -3px); color: var(--pr-red
 @media not all /* reduce-motion rules are off on purpose, see src/lib/motion.ts */ {
   .ok-card, .ok-icon, .ok-icon svg, .ok-tool { transition: none; }
   .ok-icon::after { animation: none; }
+}
+
+/* ================================================================== */
+/* Light and dark theme                                                */
+/* The site is designed light. data-theme="dark" (set on <html> before   */
+/* the page paints, see layout.tsx) swaps the colours below.            */
+/* ================================================================== */
+:root { --page-bg: #efeeeb; }
+html[data-theme="dark"] { --page-bg: #121211; color-scheme: dark; }
+body { background-color: var(--page-bg); }
+
+/* floating theme switch, bottom right: a sun and moon switch (on = light, off = dark) */
+.theme-switch { position: fixed; right: max(0.9rem, env(safe-area-inset-right)); bottom: calc(1.4rem + env(safe-area-inset-bottom, 0px)); z-index: 8000; font-size: 17px; display: inline-block; width: 4em; height: 2.2em; border-radius: 30px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.2); transition: opacity 0.6s ease; -webkit-tap-highlight-color: transparent; }
+.theme-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.theme-slider { position: absolute; inset: 0; background-color: #2a2a2a; transition: 0.4s; border-radius: 30px; overflow: hidden; cursor: pointer; }
+.theme-slider::before { position: absolute; content: ""; height: 1.2em; width: 1.2em; border-radius: 20px; left: 0.5em; bottom: 0.5em; transition: 0.4s; transition-timing-function: cubic-bezier(0.81, -0.04, 0.38, 1.5); box-shadow: inset 8px -4px 0 0 #fff; }
+.theme-switch input:checked + .theme-slider { background-color: #00a6ff; }
+.theme-switch input:checked + .theme-slider::before { transform: translateX(1.8em); box-shadow: inset 15px -4px 0 15px #ffcf48; }
+.theme-switch input:focus-visible + .theme-slider { outline: 2px solid #d1181f; outline-offset: 3px; }
+.theme-star { position: absolute; width: 5px; height: 5px; border-radius: 50%; background-color: #fff; transition: all 0.4s; }
+.theme-star-1 { left: 2.5em; top: 0.5em; }
+.theme-star-2 { left: 2.2em; top: 1.2em; }
+.theme-star-3 { left: 3em; top: 0.9em; }
+.theme-switch input:checked ~ .theme-slider .theme-star { opacity: 0; }
+.theme-cloud { position: absolute; width: 3.5em; bottom: -1.4em; left: -1.1em; opacity: 0; transition: all 0.4s; }
+.theme-switch input:checked ~ .theme-slider .theme-cloud { opacity: 1; }
+html.splash-lock .theme-switch { opacity: 0; visibility: hidden; pointer-events: none; transition: none; }
+body.has-mini-player .theme-switch { bottom: calc(6.6rem + env(safe-area-inset-bottom, 0px)); }
+
+html[data-theme="dark"] {
+  --d-bg: #121211;
+  --d-card: #1b1a18;
+  --d-card-2: #262420;
+  --d-ink: #efece4;
+  --d-soft: #b9b4a8;
+  --d-dim: #8d887c;
+  --d-rule: #3a3833;
+  --d-red: #ff5a52;
+}
+
+/* hero, intro, selected projects, services heading, tech stack, certifications */
+html[data-theme="dark"] .hero { --hero-bg: var(--d-bg); --hero-ink: var(--d-ink); --hero-rule: var(--d-rule); }
+html[data-theme="dark"] .hero-marquee-item i { color: var(--d-red); }
+html[data-theme="dark"] .intro { --intro-bg: var(--d-bg); --intro-ink: var(--d-ink); --intro-dim: #3f3d38; --intro-rule: var(--d-rule); --intro-red: var(--d-red); }
+html[data-theme="dark"] .intro-kicker, html[data-theme="dark"] .ct-sub { color: var(--d-soft); }
+html[data-theme="dark"] .intro-logo { color: var(--d-dim); }
+html[data-theme="dark"] .intro-logos:hover .intro-logo { color: var(--d-soft); }
+html[data-theme="dark"] .intro-logo:hover { color: var(--d-ink) !important; }
+html[data-theme="dark"] .intro-photo { box-shadow: 0 24px 40px -12px rgba(0, 0, 0, 0.7); }
+html[data-theme="dark"] .sp { --sp-bg: var(--d-bg); --sp-ink: var(--d-ink); --sp-rule: var(--d-rule); --sp-dim: var(--d-dim); --sp-red: var(--d-red); }
+html[data-theme="dark"] .sp-row:hover .sp-name button { color: var(--d-soft); }
+html[data-theme="dark"] .sp-jump { border-color: #55524a; color: var(--d-dim); }
+html[data-theme="dark"] .sp-meta dt { color: var(--d-dim); }
+html[data-theme="dark"] .svx { --svx-bg: var(--d-bg); --svx-ink: var(--d-ink); }
+html[data-theme="dark"] .ts { --ts-bg: var(--d-bg); --ts-ink: var(--d-ink); --ts-dim: var(--d-soft); --ts-card: var(--d-card); --ts-edge: rgba(255, 255, 255, 0.1); }
+/* the tool tiles stay light, so black brand logos (Next.js, GitHub...) remain visible; their names need dark text */
+html[data-theme="dark"] .ts-name { color: #2a2925; }
+html[data-theme="dark"] .ct { --ct-bg: var(--d-bg); --ct-ink: var(--d-ink); }
+/* the AWS logo file has dark lettering: flip it for the dark theme (the orange arrow keeps its colour) */
+html[data-theme="dark"] .ct-badge img { filter: invert(1) hue-rotate(180deg); }
+html[data-theme="dark"] .ct .ct-badge .ct-stack-icon .ct-stack-check { color: var(--d-red); }
+
+/* services rows: the panel behind the animated mockups */
+html[data-theme="dark"] .svc-panel { background: #1c1a17; }
+
+/* explore */
+html[data-theme="dark"] .explore-section { background: var(--d-bg); color: var(--d-ink); }
+html[data-theme="dark"] .explore-title, html[data-theme="dark"] .explore-card-title, html[data-theme="dark"] .explore-card-subtitle { color: var(--d-ink); }
+html[data-theme="dark"] .explore-sub-dash { background: var(--d-ink); }
+html[data-theme="dark"] .explore-preview-btn { background: var(--d-ink); color: #121211; }
+html[data-theme="dark"] .explore-preview-btn:hover { background: #fed24c; color: #201a18; }
+html[data-theme="dark"] .explore-card-visual { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+
+/* process, faq, open source, other skills */
+html[data-theme="dark"] .pr, html[data-theme="dark"] .fq, html[data-theme="dark"] .os, html[data-theme="dark"] .ok { --pr-bg: var(--d-bg); --pr-ink: var(--d-ink); --pr-rule: var(--d-rule); --pr-dim: var(--d-dim); --pr-red: var(--d-red); }
+html[data-theme="dark"] .os-lede, html[data-theme="dark"] .os-desc, html[data-theme="dark"] .ok-card > p { color: var(--d-soft); }
+html[data-theme="dark"] .os-card, html[data-theme="dark"] .ok-card { background: var(--d-card); box-shadow: 0 1px 0 var(--d-rule); }
+html[data-theme="dark"] .os-name em { background: var(--d-card-2); }
+html[data-theme="dark"] .os-skeleton span { background: var(--d-card-2); }
+html[data-theme="dark"] .ok-tool { background: var(--d-card-2); }
+html[data-theme="dark"] .ok-tool:hover { background: #302e29; }
+html[data-theme="dark"] .ok-icon { background: var(--d-ink); color: #121211; }
+html[data-theme="dark"] .cs-link { border-color: var(--d-ink); color: var(--d-ink); }
+html[data-theme="dark"] .cs-link:hover { background: var(--d-ink); color: #121211; }
+
+/* footer */
+.ft { --ft-dot: #0a0a0a; }
+html[data-theme="dark"] .ft { --ft-dot: #d8d4ca; }
+html[data-theme="dark"] .ft, html[data-theme="dark"] .ft-strip { background: var(--d-bg); color: var(--d-ink); }
+html[data-theme="dark"] .ft-cta, html[data-theme="dark"] .ft-tab, html[data-theme="dark"] .ft-panel { border-color: var(--d-ink); }
+html[data-theme="dark"] .ft-row { border-bottom-color: var(--d-rule); }
+html[data-theme="dark"] .ft-copy { border-left-color: var(--d-rule); }
+html[data-theme="dark"] .ft-cta:hover .ft-cta-label, html[data-theme="dark"] .ft-link:hover, html[data-theme="dark"] .ft-copy:hover { background: var(--d-ink); color: #121211; }
+html[data-theme="dark"] .ft-bar a:hover { color: var(--d-red); }
+
+@media not all /* reduce-motion rules are off on purpose, see src/lib/motion.ts */ {
+  .theme-switch, .theme-slider, .theme-slider::before, .theme-star, .theme-cloud { transition: none; }
 }

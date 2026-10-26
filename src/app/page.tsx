@@ -24,7 +24,7 @@ export default function Home() {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        background: "#efeeeb",
+        background: "var(--page-bg)",
       }}
     >
       <SplashScreen />

@@ -26,13 +26,32 @@ const WORDS = PARAGRAPHS.map((text) =>
     }),
 );
 
-// Fill colours: pale grey → red (the leading edge) → black (settled)
-const DIM: [number, number, number] = [203, 199, 189];
-const RED: [number, number, number] = [201, 20, 28];
-const INK: [number, number, number] = [10, 10, 10];
+// Fill colours: pale grey → red (the leading edge) → ink (settled). They come from the CSS variables
+// --intro-dim, --intro-red and --intro-ink, so the light and the dark theme each get their own.
+type Rgb = [number, number, number];
+let DIM: Rgb = [203, 199, 189];
+let RED: Rgb = [201, 20, 28];
+let INK: Rgb = [10, 10, 10];
 
-const mixRgb = (a: [number, number, number], b: [number, number, number], t: number) =>
-  `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(",")})`;
+const parseColor = (value: string, fallback: Rgb): Rgb => {
+  const v = value.trim();
+  const hex = v.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (hex) {
+    const h = hex[1].length === 3 ? hex[1].split("").map((c) => c + c).join("") : hex[1];
+    return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+  }
+  const rgb = v.match(/(\d+)[,\s]+(\d+)[,\s]+(\d+)/);
+  return rgb ? [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])] : fallback;
+};
+
+const readPalette = (el: Element) => {
+  const cs = getComputedStyle(el);
+  DIM = parseColor(cs.getPropertyValue("--intro-dim"), DIM);
+  RED = parseColor(cs.getPropertyValue("--intro-red"), RED);
+  INK = parseColor(cs.getPropertyValue("--intro-ink"), INK);
+};
+
+const mixRgb = (a: Rgb, b: Rgb, t: number) => `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(",")})`;
 
 const fillColor = (t: number) => (t < 0.5 ? mixRgb(DIM, RED, t * 2) : mixRgb(RED, INK, (t - 0.5) * 2));
 
@@ -174,6 +193,7 @@ export default function IntroSection() {
     const el = text.current;
     if (!track || !stage || !el) return;
     const words = Array.from(el.querySelectorAll<HTMLElement>(".intro-word"));
+    readPalette(el);
     const reduced = prefersReducedMotion();
     if (reduced) {
       words.forEach((w) => (w.style.color = fillColor(1)));
@@ -226,6 +246,13 @@ export default function IntroSection() {
       if (!frame) frame = requestAnimationFrame(update);
     };
 
+    // switching between the light and dark theme changes the colours, so read them again and repaint the words
+    const themeWatch = new MutationObserver(() => {
+      readPalette(el);
+      update();
+    });
+    themeWatch.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
     measure();
     update();
     const ro = new ResizeObserver(() => {
@@ -237,6 +264,7 @@ export default function IntroSection() {
     window.addEventListener("resize", onScroll);
     return () => {
       ro.disconnect();
+      themeWatch.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
       if (frame) cancelAnimationFrame(frame);

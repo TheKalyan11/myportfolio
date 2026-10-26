@@ -11,27 +11,18 @@ interface ThemeContextType {
 }
 
 const ThemeContext = createContext<ThemeContextType>({
-  theme: "dark",
+  theme: "light",
   toggleTheme: () => {},
   setTheme: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
   const [mounted, setMounted] = useState(false);
 
+  // The theme is chosen before the page paints (see the script in layout.tsx); here we only read it.
   useEffect(() => {
-    // Check saved preference or system preference
-    const savedTheme = localStorage.getItem("portfolio_theme") as Theme | null;
-    if (savedTheme) {
-      setThemeState(savedTheme);
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      const initialTheme = prefersDark ? "dark" : "dark"; // Default to dark for premium aesthetic
-      setThemeState(initialTheme);
-      document.documentElement.setAttribute("data-theme", initialTheme);
-    }
+    setThemeState(document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light");
     setMounted(true);
   }, []);
 
