@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ArrowRight, ArrowUpRight, Check, Copy } from "lucide-react";
-import { CITY, EMAIL, EMAIL_ALT, PHONE, SOCIALS } from "@/data/contact";
+import { CITY, EMAIL, EMAIL_ALT, PHONE, SOCIALS, WHATSAPP_URL } from "@/data/contact";
 import { INDIA_OUTLINE } from "@/data/indiaOutline";
 import { prefersReducedMotion } from "@/lib/motion";
 
@@ -361,7 +361,7 @@ export default function FooterSection() {
           <br />
           Ready when you are.
         </h2>
-        <a className="ft-cta" href={`mailto:${EMAIL}`}>
+        <a className="ft-cta" href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" aria-label="Say hello on WhatsApp">
           <span className="ft-cta-arrow">
             <ArrowRight size={18} />
           </span>

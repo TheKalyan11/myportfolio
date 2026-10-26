@@ -11,8 +11,8 @@ type Service = {
   title: string;
   copy: string;
   tags: string;
-  layout: "browser" | "phones" | "motion" | "shop";
-  shots?: [Shot, Shot]; // only the browser layout uses these; the motion, phones and shop layouts draw their own animated panels
+  layout: "browser" | "phones" | "motion" | "shop" | "ai" | "ux";
+  shots?: [Shot, Shot]; // only the browser layout uses these; the other layouts draw their own animated panels
 };
 
 // Drafts: edit the wording freely. The screenshots are your own projects.
@@ -37,17 +37,31 @@ const SERVICES: Service[] = [
   },
   {
     num: "03",
+    title: "AI Solutions & Agents",
+    copy: "Generative AI features, LLM-powered agents and RAG pipelines that connect to your own data and workflows, built to be reliable in production and not just in a demo.",
+    tags: "Generative AI · LLMs · RAG · AI agents · Automation",
+    layout: "ai",
+  },
+  {
+    num: "04",
     title: "Animations & Microinteractions",
     copy: "Motion has a purpose. I design animations that guide users, reinforce your brand identity, and turn every scroll into a memorable experience.",
     tags: "Scroll animation · Microinteractions · Motion",
     layout: "motion",
   },
   {
-    num: "04",
-    title: "Shopify / Ecommerce & UI UX",
+    num: "05",
+    title: "Shopify / Ecommerce",
     copy: "Custom Shopify stores designed around your brand, creating shopping experiences that feel unique instead of generic.",
-    tags: "Shopify · Ecommerce · UI/UX",
+    tags: "Shopify · Ecommerce · Custom storefronts",
     layout: "shop",
+  },
+  {
+    num: "06",
+    title: "UI & UX Design",
+    copy: "Interfaces designed around how people actually use them: clear flows, a consistent design system and the small details that make a product feel effortless.",
+    tags: "UI design · UX flows · Design systems",
+    layout: "ux",
   },
 ];
 
@@ -327,10 +341,10 @@ export default function ServicesSection() {
           <div ref={title} className="svx-title-wrap">
             <h2 id="svx-heading" className="svx-title">
               <span className="svx-line svx-line-a">
-                <span>Small details.</span>
+                <span>Web, mobile &amp; AI.</span>
               </span>
               <span className="svx-line svx-line-b">
-                <span>Big impact.</span>
+                <span>Built to scale.</span>
               </span>
             </h2>
             <p className="svx-label">[ Services ]</p>
@@ -446,6 +460,131 @@ export default function ServicesSection() {
                           </span>
                         </div>
                         <div className="mo-prog">
+                          <u />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : s.layout === "ai" ? (
+                  <div className="ai-scene">
+                    {/* A chat that streams its answer, next to the RAG pipeline that produced it. */}
+                    <div className="ai-card ai-chat">
+                      <span className="ai-cap">Assistant</span>
+                      <div className="ai-msg ai-user">Summarize the Q3 report</div>
+                      <div className="ai-msg ai-bot">
+                        <span className="ai-typing">
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                        <span className="ai-stream">
+                          <b />
+                          <b />
+                          <b />
+                          <b />
+                          <u className="ai-caret" />
+                        </span>
+                      </div>
+                      <span className="ai-tool">search_docs(&quot;Q3 report&quot;)</span>
+                      <div className="ai-input">
+                        <span />
+                        <i />
+                      </div>
+                    </div>
+                    <div className="ai-card ai-flow">
+                      <span className="ai-cap">RAG pipeline</span>
+                      <div className="ai-nodes">
+                        <span className="ai-node">
+                          <i />
+                          Documents
+                        </span>
+                        <span className="ai-link">
+                          <u />
+                        </span>
+                        <span className="ai-node">
+                          <i />
+                          Embeddings
+                        </span>
+                        <span className="ai-link">
+                          <u />
+                        </span>
+                        <span className="ai-node">
+                          <i />
+                          Vector search
+                        </span>
+                        <span className="ai-link">
+                          <u />
+                        </span>
+                        <span className="ai-node">
+                          <i />
+                          LLM answer
+                        </span>
+                      </div>
+                      <span className="ai-cited">
+                        <i />
+                        Answer grounded in 3 sources
+                      </span>
+                    </div>
+                  </div>
+                ) : s.layout === "ux" ? (
+                  <div className="ux-scene">
+                    {/* A dashed wireframe is painted into the finished screen, beside the design tokens and a flow. */}
+                    <div className="ux-art">
+                      <div className="ux-frame">
+                        {(["wire", "final"] as const).map((kind) => (
+                          <div key={kind} className={`ux-ui ux-ui-${kind}`}>
+                            <span className="u-head">
+                              <i />
+                              <b />
+                            </span>
+                            <span className="u-hero" />
+                            <span className="u-title" />
+                            <span className="u-line" />
+                            <span className="u-line u-short" />
+                            <span className="u-btn" />
+                          </div>
+                        ))}
+                        <span className="ux-guide">
+                          <em>16 px</em>
+                        </span>
+                        <span className="ux-wipe" />
+                      </div>
+                    </div>
+                    <div className="ux-panel">
+                      <div>
+                        <span className="ux-cap">Colour</span>
+                        <div className="ux-swatches">
+                          <i />
+                          <i />
+                          <i />
+                          <i />
+                          <i />
+                        </div>
+                      </div>
+                      <div>
+                        <span className="ux-cap">Type</span>
+                        <div className="ux-type">
+                          <strong>Aa</strong>
+                          <span>
+                            <b />
+                            <i />
+                          </span>
+                        </div>
+                      </div>
+                      <div>
+                        <span className="ux-cap">Spacing</span>
+                        <div className="ux-space">
+                          <b />
+                          <b />
+                          <b />
+                        </div>
+                      </div>
+                      <div>
+                        <span className="ux-cap">User flow</span>
+                        <div className="ux-flow">
+                          <i />
+                          <i />
+                          <i />
                           <u />
                         </div>
                       </div>

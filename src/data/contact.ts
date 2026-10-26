@@ -8,6 +8,9 @@ export const EMAIL_ALT = "kalyan110323@gmail.com";
 // Shown in the footer. Leave it empty to hide it.
 export const PHONE = "+91 91008 89955";
 
+// The "Say hello" button opens a WhatsApp chat with this number (made from the phone number above, digits only).
+export const WHATSAPP_URL = `https://wa.me/${PHONE.replace(/\D/g, "")}?text=${encodeURIComponent("Hello Kalyan!")}`;
+
 // Profile links for the "Follow me" box. A row with an empty href is shown but is not clickable yet:
 // paste your profile address into href to turn it on, or delete the row you don't use.
 export const SOCIALS: { label: string; href: string }[] = [

@@ -4,10 +4,27 @@ import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import { prefersReducedMotion } from "@/lib/motion";
 
-const INTRO =
-  "Hi, I'm Kalyan - a full stack developer with a name that sounds like a blessing. I build web and mobile products people enjoy using and systems that never make them wait. Interfaces, APIs and the cloud they run on - and when the work needs art direction, motion or 3D, that gets made here too. I am also an open source contributor.";
+// The about text, one string per paragraph. **Double asterisks** mark the bold parts.
+const PARAGRAPHS = [
+  "**Hi, I’m Kalyan — a Full Stack & AI Engineer building scalable web and mobile applications, intelligent AI solutions, and cloud-powered systems.** I work across the entire stack, from crafting seamless user experiences and robust APIs to deploying reliable infrastructure on AWS.",
+  "I build with Next.js, React, and modern technologies, integrating Generative AI, LLMs, RAG pipelines, AI agents, and intelligent automation to turn complex ideas into practical, production-ready products. From system architecture and backend engineering to cloud infrastructure, performance optimization, and AI-powered workflows, I focus on building software that is reliable, scalable, and genuinely useful.",
+  "Beyond development, I enjoy exploring creative digital experiences, motion, and 3D when a project calls for something distinctive. I also contribute to open source and believe in building technology that developers and users love.",
+  "**My focus:** Full-Stack Engineering · Generative AI & LLMs · AI Agents & Automation · AWS Cloud · Web & Mobile Apps · Open Source",
+];
 
-const WORDS = INTRO.split(" ");
+// Every word with its paragraph and whether it is bold, so the scroll fill can colour them one by one.
+const WORDS = PARAGRAPHS.map((text) =>
+  text
+    .split(/(\*\*[^*]+\*\*)/)
+    .filter(Boolean)
+    .flatMap((part) => {
+      const bold = part.startsWith("**");
+      return (bold ? part.slice(2, -2) : part)
+        .split(" ")
+        .filter(Boolean)
+        .map((word) => ({ word, bold }));
+    }),
+);
 
 // Fill colours: pale grey → red (the leading edge) → black (settled)
 const DIM: [number, number, number] = [203, 199, 189];
@@ -146,7 +163,7 @@ function MarqueeRow({ items, duration }: { items: Client[]; duration: number }) 
 export default function IntroSection() {
   const trackEl = useRef<HTMLDivElement>(null);
   const stageEl = useRef<HTMLDivElement>(null);
-  const text = useRef<HTMLParagraphElement>(null);
+  const text = useRef<HTMLDivElement>(null);
   const photo = useRef<HTMLDivElement>(null);
 
   // The paragraph is pinned in the middle of the screen while the section's
@@ -166,17 +183,29 @@ export default function IntroSection() {
     const SOFT = 9; // how many words are mid-fade at once (the red leading edge)
     let frame = 0;
     let stageH = 0;
+    let tall = false;
     const measure = () => {
       // the pinned frame is only as tall as the text, so there is no dead space around it
       stageH = stage.offsetHeight;
       track.style.setProperty("--stage-h", `${stageH}px`);
+      // text taller than the screen cannot be pinned (the bottom would be cut off), so it just scrolls
+      tall = stageH > window.innerHeight * 0.92;
+      track.classList.toggle("is-tall", tall);
     };
     const update = () => {
       frame = 0;
-      const rect = track.getBoundingClientRect();
-      const pinTop = (window.innerHeight - stageH) / 2; // where the stage sticks
-      const travel = rect.height - stageH;
-      const progress = travel > 0 ? Math.min(1, Math.max(0, (pinTop - rect.top) / travel)) : 1;
+      let progress: number;
+      if (tall) {
+        // not pinned: fill while the text moves up through the screen
+        const top = stage.getBoundingClientRect().top;
+        const vh = window.innerHeight;
+        progress = Math.min(1, Math.max(0, (vh * 0.85 - top) / (stageH + vh * 0.25)));
+      } else {
+        const rect = track.getBoundingClientRect();
+        const pinTop = (window.innerHeight - stageH) / 2; // where the stage sticks
+        const travel = rect.height - stageH;
+        progress = travel > 0 ? Math.min(1, Math.max(0, (pinTop - rect.top) / travel)) : 1;
+      }
       // finish filling slightly before the pin releases so the full text is readable
       const filled = Math.min(1, progress / 0.85) * (words.length + SOFT);
       words.forEach((w, i) => {
@@ -185,8 +214,12 @@ export default function IntroSection() {
       });
 
       if (photo.current) {
-        photo.current.style.setProperty("--drift", `${((0.5 - progress) * 46).toFixed(1)}px`);
-        photo.current.style.setProperty("--tilt", `${(11 - progress * 8).toFixed(2)}deg`);
+        // the portrait glides up, straightens up, zooms out and fades in as the text fills
+        const p = photo.current;
+        p.style.setProperty("--drift", `${(-progress * 90).toFixed(1)}px`);
+        p.style.setProperty("--tilt", `${(16 - progress * 20).toFixed(2)}deg`);
+        p.style.setProperty("--zoom", (1.1 - progress * 0.1).toFixed(3));
+        p.style.setProperty("--fade", (0.45 + Math.min(1, progress * 4) * 0.55).toFixed(3));
       }
     };
     const onScroll = () => {
@@ -218,22 +251,28 @@ export default function IntroSection() {
 
       <div ref={trackEl} className="intro-track">
         <div ref={stageEl} className="intro-stage">
-          <p ref={text} className="intro-text">
-            <span ref={photo} className="intro-photo" aria-hidden>
-              <Image
-                src="/Sepia-Toned Vintage Studio Portrait.png"
-                alt=""
-                fill
-                sizes="(max-width: 768px) 130px, 260px"
-                style={{ objectFit: "cover", objectPosition: "50% 35%" }}
-              />
-            </span>
-            {WORDS.map((word, i) => (
-              <React.Fragment key={i}>
-                <span className="intro-word">{word}</span>{" "}
-              </React.Fragment>
+          <div ref={text} className="intro-text">
+            {WORDS.map((words, p) => (
+              <p key={p} className="intro-para">
+                {p === 0 && (
+                  <span ref={photo} className="intro-photo" aria-hidden>
+                    <Image
+                      src="/Sepia-Toned Vintage Studio Portrait.png"
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 130px, 260px"
+                      style={{ objectFit: "cover", objectPosition: "50% 0%" }}
+                    />
+                  </span>
+                )}
+                {words.map(({ word, bold }, i) => (
+                  <React.Fragment key={i}>
+                    <span className={bold ? "intro-word intro-bold" : "intro-word"}>{word}</span>{" "}
+                  </React.Fragment>
+                ))}
+              </p>
             ))}
-          </p>
+          </div>
         </div>
       </div>
 

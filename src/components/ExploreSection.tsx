@@ -7,10 +7,13 @@ import { X, Play, Pause, Sparkles, Gamepad2, Disc3 } from "lucide-react";
 import CrazyCalculator from "@/components/CrazyCalculator";
 import MusicWavePlayer from "@/components/MusicWavePlayer";
 import PixelStudio from "@/components/PixelStudio";
+import AiAssistant from "@/components/AiAssistant";
+import TokenLab from "@/components/TokenLab";
+import MoodReader from "@/components/MoodReader";
 
 interface ExploreItem {
   id: string;
-  category: "music" | "creative" | "games";
+  category: "music" | "creative" | "games" | "ai";
   categoryLabel: string;
   countBadge: string;
   pillBg: string;
@@ -84,6 +87,66 @@ const EXPLORE_ITEMS: ExploreItem[] = [
       "Global leaderboard with anti-cheat state validation",
       "Responsive touch controls for mobile devices"
     ]
+  },
+  {
+    id: "ai-assistant",
+    category: "ai",
+    categoryLabel: "AI",
+    countBadge: "04+",
+    pillBg: "#d7f0e3",
+    pillColor: "#2a170f",
+    cardBg: "#a9dcc2",
+    title: "ASK KALYAN",
+    subtitle: "AI ASSISTANT",
+    image: "/explore/ai-assistant.svg",
+    description: "Chat with a small assistant that answers questions about Kalyan's skills, projects and AI work. It retrieves the best-matching facts and streams the answer back, like a tiny RAG pipeline that runs in your browser.",
+    tags: ["RAG idea", "Streaming UI", "React", "TypeScript"],
+    features: [
+      "Matches your question against facts and shows what it retrieved",
+      "Streams the answer a few characters at a time",
+      "Runs entirely in the browser: no AI service, nothing is sent anywhere",
+      "Suggested questions to get started"
+    ]
+  },
+  {
+    id: "token-lab",
+    category: "ai",
+    categoryLabel: "AI",
+    countBadge: "05+",
+    pillBg: "#d6e8fb",
+    pillColor: "#2a170f",
+    cardBg: "#a9cdf3",
+    title: "TOKEN LAB",
+    subtitle: "HOW AI READS TEXT",
+    image: "/explore/token-lab.svg",
+    description: "See how a language model reads your text: split into tokens, counted, and priced. Type anything and watch the colored tokens, the counts and the estimated cost change.",
+    tags: ["Tokenization", "LLM basics", "React", "TypeScript"],
+    features: [
+      "Live token, word and character counts",
+      "Colored tokens with optional token IDs",
+      "Cost estimate from your own price per million tokens",
+      "A simple approximation of real tokenizers"
+    ]
+  },
+  {
+    id: "mood-reader",
+    category: "ai",
+    categoryLabel: "AI",
+    countBadge: "06+",
+    pillBg: "#fbe0cc",
+    pillColor: "#2a170f",
+    cardBg: "#f5b996",
+    title: "MOOD READER",
+    subtitle: "SENTIMENT ANALYSIS",
+    image: "/explore/mood-reader.svg",
+    description: "Write a sentence and see the mood it carries on a gauge, with the positive and negative words highlighted. It understands \"not good\" and \"very good\".",
+    tags: ["Sentiment analysis", "NLP basics", "React", "TypeScript"],
+    features: [
+      "Animated mood gauge from very negative to very positive",
+      "Highlights the words that drove the score",
+      "Handles negation and intensifiers",
+      "Runs instantly in the browser"
+    ]
   }
 ];
 
@@ -95,11 +158,13 @@ export default function ExploreSection() {
     if (item.id === "music-player") setIsMusicPlayerOpen(true);
     else if (item.id === "pixel-studio") setIsPixelOpen(true);
     else if (item.id === "games") setIsCalcOpen(true);
+    else if (item.id === "ai-assistant" || item.id === "token-lab" || item.id === "mood-reader") setOpenLab(item.id);
     else setActiveModalItem(item);
   };
   const [isMusicPlayerOpen, setIsMusicPlayerOpen] = useState(false);
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [isPixelOpen, setIsPixelOpen] = useState(false);
+  const [openLab, setOpenLab] = useState<"ai-assistant" | "token-lab" | "mood-reader" | null>(null);
   const [mounted, setMounted] = useState(false);
 
   // Audio simulation state for Music Player modal
@@ -115,17 +180,18 @@ export default function ExploreSection() {
       if (e.key === "Escape") {
         if (isMusicPlayerOpen) setIsMusicPlayerOpen(false);
         if (isPixelOpen) setIsPixelOpen(false);
+        if (openLab) setOpenLab(null);
         if (isCalcOpen) setIsCalcOpen(false);
         if (activeModalItem) setActiveModalItem(null);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isMusicPlayerOpen, isPixelOpen, isCalcOpen, activeModalItem]);
+  }, [isMusicPlayerOpen, isPixelOpen, isCalcOpen, openLab, activeModalItem]);
 
   // Lock body scroll when in-page music player modal is active
   useEffect(() => {
-    if (isMusicPlayerOpen || isPixelOpen || isCalcOpen) {
+    if (isMusicPlayerOpen || isPixelOpen || isCalcOpen || openLab) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -133,7 +199,7 @@ export default function ExploreSection() {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [isMusicPlayerOpen, isPixelOpen, isCalcOpen]);
+  }, [isMusicPlayerOpen, isPixelOpen, isCalcOpen, openLab]);
 
   return (
     <section id="explore" className="explore-section" aria-label="Explore Projects and Experiments">
@@ -344,6 +410,16 @@ export default function ExploreSection() {
       {mounted && isPixelOpen && createPortal(
         <div className="dl-overlay" onClick={() => setIsPixelOpen(false)}>
           <PixelStudio onClose={() => setIsPixelOpen(false)} />
+        </div>,
+        document.body
+      )}
+
+      {/* AI labs: Ask Kalyan, Token Lab and Mood Reader */}
+      {mounted && openLab && createPortal(
+        <div className="dl-overlay" onClick={() => setOpenLab(null)}>
+          {openLab === "ai-assistant" && <AiAssistant onClose={() => setOpenLab(null)} />}
+          {openLab === "token-lab" && <TokenLab onClose={() => setOpenLab(null)} />}
+          {openLab === "mood-reader" && <MoodReader onClose={() => setOpenLab(null)} />}
         </div>,
         document.body
       )}

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { BadgeCheck, Code2, Layers } from "lucide-react";
-import { siFlutter } from "simple-icons";
+import { siFlutter, siGoogle } from "simple-icons";
 import { prefersReducedMotion } from "@/lib/motion";
 
 const LINES = ["Certifications"];
@@ -35,6 +35,20 @@ const BADGES: Badge[] = [
   { label: "Full-Stack Web Development Program", custom: <Code2 className="ct-plain-check" strokeWidth={2} aria-hidden /> },
   { label: "Flutter Certified", brand: siFlutter },
   { label: "AWS Certified", image: "/logos/aws.svg" },
+  // AI Certified is from Google, the Generative AI Foundations Certificate from Microsoft
+  { label: "AI Certified", brand: siGoogle },
+  {
+    label: "Generative AI Foundations Certificate",
+    // simple-icons has no Microsoft logo, so its four squares are drawn here
+    custom: (
+      <svg viewBox="0 0 24 24" aria-hidden>
+        <path d="M2 2h9.5v9.5H2z" fill="#f25022" />
+        <path d="M12.5 2H22v9.5h-9.5z" fill="#7fba00" />
+        <path d="M2 12.5h9.5V22H2z" fill="#00a4ef" />
+        <path d="M12.5 12.5H22V22h-9.5z" fill="#ffb900" />
+      </svg>
+    ),
+  },
 ];
 
 // Deterministic "random" numbers, so the server and the browser scatter the letters identically.

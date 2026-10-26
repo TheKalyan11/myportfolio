@@ -2,6 +2,10 @@ import Hero from "@/components/Hero";
 import IntroSection from "@/components/IntroSection";
 import SelectedProjects from "@/components/SelectedProjects";
 import ServicesSection from "@/components/ServicesSection";
+import OtherSkills from "@/components/OtherSkills";
+import OpenSourceSection from "@/components/OpenSourceSection";
+import ProcessSection from "@/components/ProcessSection";
+import FaqSection from "@/components/FaqSection";
 import TechStackSection from "@/components/TechStackSection";
 import CertificationsSection from "@/components/CertificationsSection";
 import ExploreSection from "@/components/ExploreSection";
@@ -29,9 +33,13 @@ export default function Home() {
         <IntroSection />
         <SelectedProjects />
         <ServicesSection />
+        <ProcessSection />
         <TechStackSection />
+        <OtherSkills />
         <CertificationsSection />
+        <OpenSourceSection />
         <ExploreSection />
+        <FaqSection />
         <ContactSection />
         <FooterSection />
       </main>

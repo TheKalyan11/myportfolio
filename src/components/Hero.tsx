@@ -11,11 +11,14 @@ import { scrollToSection } from "@/lib/scrollToSection";
 
 // Skill tags: they only react to the pointer (hover), they do not link anywhere.
 const TAGS = [
-  { label: "Web & Mobile Apps" },
-  { label: "AWS Cloud Infrastructure" },
-  { label: "LLM Solutions & Agents" },
-  { label: "Full-Stack Architecture" },
-  { label: "Next.js & React 19" },
+  { label: "Generative AI & LLM Applications" },
+  { label: "AI Agents & Workflow Automation" },
+  { label: "RAG Pipelines & AI Integrations" },
+  { label: "AWS Cloud Infrastructure & Serverless Architecture" },
+  { label: "Full-Stack & Distributed Systems Architecture" },
+  { label: "Next.js, React 19 & Modern Web Applications" },
+  { label: "Cross-Platform Mobile App Development" },
+  { label: "REST APIs, Database Design & Backend Engineering" },
 ];
 
 // One entry for each section of the page, in page order.
@@ -23,10 +26,14 @@ const NAV_LINKS = [
   { number: "01", label: "About", href: "#intro" },
   { number: "02", label: "Selected Projects", href: "#selected-projects" },
   { number: "03", label: "Services", href: "#services" },
-  { number: "04", label: "Tech Stack", href: "#tech-stack" },
-  { number: "05", label: "Certifications", href: "#certifications" },
-  { number: "06", label: "Explore", href: "#explore" },
-  { number: "07", label: "Contact", href: "#contact" },
+  { number: "04", label: "How I Work", href: "#process" },
+  { number: "05", label: "Tech Stack", href: "#tech-stack" },
+  { number: "06", label: "Other Skills", href: "#other-skills" },
+  { number: "07", label: "Certifications", href: "#certifications" },
+  { number: "08", label: "Open Source", href: "#open-source" },
+  { number: "09", label: "Explore", href: "#explore" },
+  { number: "10", label: "FAQ", href: "#faq" },
+  { number: "11", label: "Contact", href: "#contact" },
 ];
 
 // The title's font size is clamp(4.4rem, 9.8vw, 10.2rem) with a line height of 0.85, so the mascot is sized from one title line (the drawing has some empty margin, hence the 2).
@@ -55,7 +62,7 @@ export default function Hero() {
       {/* Top bar */}
       <nav className="hero-nav" aria-label="Primary">
         <a href="#about" className="hero-logo">
-          kalyan
+          thekalyan.online
         </a>
         <button
           className="hero-burger"
@@ -103,9 +110,9 @@ export default function Hero() {
           </div>
 
           <p className="hero-lede">
-            <strong>Full Stack Developer</strong> · Web &amp; Mobile Apps, AWS, and LLM Solutions.
+            <strong>Full Stack &amp; AI Engineer</strong> · Web &amp; Mobile Apps, AWS, Generative AI &amp; Intelligent Automation
             <br />
-            Architecting high-scale distributed systems &amp; intelligent production applications.
+            Architecting scalable distributed systems, production-grade AI applications, and intelligent automation solutions.
           </p>
 
           <ul className="hero-tags">
@@ -138,7 +145,7 @@ export default function Hero() {
       {menuOpen && (
         <div className="hero-menu">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span className="hero-logo">kalyan // MENU</span>
+            <span className="hero-logo">thekalyan.online // MENU</span>
             <button
               onClick={() => setMenuOpen(false)}
               aria-label="Close navigation menu"
