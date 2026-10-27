@@ -7,7 +7,7 @@ import MiniPlayer from "@/components/MiniPlayer";
 import FloatingPlayButton from "@/components/FloatingPlayButton";
 import ThemeToggle from "@/components/ThemeToggle";
 import { SOCIALS } from "@/data/contact";
-import { KEYWORDS, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
+import { GA_ID, KEYWORDS, SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -65,8 +65,8 @@ export const metadata: Metadata = {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
-  // After adding the site in Google Search Console, paste the verification code here:
-  // verification: { google: "your-code" },
+  // Google Search Console ownership check (renders <meta name="google-site-verification" ...>)
+  verification: { google: "U5hD56Mio8uT7ZajMrr7Jrr_0SA-bgg0yMciEAnmRSU" },
 };
 
 // Facts about the site and its owner, in the form search engines read (schema.org). Everything here is also visible on the page.
@@ -159,6 +159,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${funnelDisplay.variable} ${poppins.variable}`} suppressHydrationWarning>
       <head>
+        {/* Google tag (Google Analytics 4). It is written straight into the page head, which is where Google looks when it checks ownership. */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(STRUCTURED_DATA).replace(/</g, "\\u003c") }}

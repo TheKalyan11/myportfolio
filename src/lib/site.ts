@@ -2,6 +2,9 @@
 // Set NEXT_PUBLIC_SITE_URL in the host's settings to change the address without touching code.
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://thekalyan.online").replace(/\/+$/, "");
 
+// Google Analytics 4 measurement ID (Analytics > Admin > Data streams)
+export const GA_ID = "G-R6VZXYNZ83";
+
 export const SITE_NAME = "Kalyan";
 export const SITE_TITLE = "Kalyan | Full Stack & AI Engineer in Hyderabad, India";
 export const SITE_DESCRIPTION =
