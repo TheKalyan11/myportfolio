@@ -80,7 +80,7 @@ export default function Hero() {
           <CursorTrail>
             <Image
               src="/Contemplative Sepia Profile Portrait.png"
-              alt="Contemplative Sepia Profile Portrait"
+              alt="Portrait of Kalyan, Full Stack and AI Engineer based in Hyderabad, India"
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 55vw"
@@ -97,6 +97,7 @@ export default function Hero() {
               <span className="hero-line">
                 <span>KALYAN</span>
               </span>
+              <span className="sr-only"> - Full Stack &amp; AI Engineer in Hyderabad, India</span>
             </h1>
             {/* Stands between THE and KALYAN, to the right of THE. It follows the pointer and blinks when poked (sheets are in /public/mascots). */}
             <div className="hero-mascot">
