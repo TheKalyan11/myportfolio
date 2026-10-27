@@ -234,7 +234,7 @@ export default function ExploreSection() {
                     width={640}
                     height={480}
                     className="explore-card-img"
-                    priority
+                    sizes="(max-width: 960px) 90vw, 400px"
                   />
                 </div>
                 {/* Subtle interactive hover badge */}

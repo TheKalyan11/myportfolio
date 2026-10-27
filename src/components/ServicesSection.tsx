@@ -154,6 +154,9 @@ export default function ServicesSection() {
       const vw = window.innerWidth;
       const vh = window.innerHeight;
 
+      // Nothing to move while the whole section is well away from the screen (this runs on every scroll frame of the page)
+      if (trackEl.getBoundingClientRect().top > vh * 1.5 || wrapEl.getBoundingClientRect().bottom < -vh * 0.5) return;
+
       // 1. Intro: scroll progress through the pinned track drives the colour wipe.
       if (!reduced) {
         const rect = trackEl.getBoundingClientRect();
@@ -312,6 +315,22 @@ export default function ServicesSection() {
     });
   }, []);
 
+  // The animated mockups loop forever, and the ones you cannot see still cost the page time on every frame (some animate sizes or
+  // custom properties, which forces layout). So each panel starts paused (is-offscreen) and only plays while it is near the screen.
+  useEffect(() => {
+    const panels = Array.from(wrap.current?.querySelectorAll<HTMLElement>(".svc-panel") ?? []);
+    if (!("IntersectionObserver" in window)) {
+      panels.forEach((p) => p.classList.remove("is-offscreen"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle("is-offscreen", !e.isIntersecting)),
+      { rootMargin: "150px 0px" },
+    );
+    panels.forEach((p) => io.observe(p));
+    return () => io.disconnect();
+  }, []);
+
   return (
     <section id="services" className="svx" aria-labelledby="svx-heading">
       <div ref={track} className="svx-track">
@@ -368,7 +387,7 @@ export default function ServicesSection() {
                 <small>{s.tags}</small>
               </div>
 
-              <div className="svc-panel" aria-hidden>
+              <div className="svc-panel is-offscreen" aria-hidden>
                 <div className={`svc-cluster${s.layout === "phones" ? " svc-cluster-phone" : ""}`}>
                 {s.layout === "motion" ? (
                   <div className="svc-motion">

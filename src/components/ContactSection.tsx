@@ -83,12 +83,31 @@ export default function ContactSection() {
   }, []);
   const useVideo = Boolean(SKY_VIDEO) && !videoFailed && roomForVideo;
 
+  // The video only loads and plays while the section is near the screen. Before, two copies of the 6.5 MB clip started downloading
+  // and decoding as soon as the page opened (while the opening screen was still playing) and kept playing, with a timer running
+  // 30 times a second, long after the visitor had scrolled away from it.
+  const [near, setNear] = useState(() => typeof window !== "undefined" && !("IntersectionObserver" in window));
+  const [loaded, setLoaded] = useState(near); // once it has been near, the video stays loaded (and just pauses when far away)
+  useEffect(() => {
+    const el = root.current;
+    if (!el || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        setNear(entry.isIntersecting);
+        if (entry.isIntersecting) setLoaded(true);
+      },
+      { rootMargin: "1500px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // Seamless loop. A video that simply loops jumps visibly when it restarts, so two copies play half a clip
   // apart. The bottom copy is always fully visible; the top copy fades out as it nears its end and fades back
   // in after it restarts. Whenever the top copy jumps back to the start it is invisible, and whenever the
   // bottom copy jumps the top copy is fully covering it, so the sky never seems to replay.
   useEffect(() => {
-    if (!useVideo) return;
+    if (!useVideo || !near) return;
     const top = topVideo.current;
     const bottom = bottomVideo.current;
     if (!top || !bottom) return;
@@ -100,6 +119,10 @@ export default function ContactSection() {
       bottom.pause();
       return;
     }
+
+    // (re)start both copies: the first time the attribute autoplays them, after being paused far away they need a nudge
+    void top.play().catch(() => {});
+    void bottom.play().catch(() => {});
 
     let ready = false;
     const prepare = () => {
@@ -137,8 +160,11 @@ export default function ContactSection() {
       window.clearInterval(timer);
       top.removeEventListener("loadedmetadata", prepare);
       bottom.removeEventListener("loadedmetadata", prepare);
+      // scrolled far away: stop decoding (the downloaded video stays, so coming back is instant)
+      top.pause();
+      bottom.pause();
     };
-  }, [useVideo]);
+  }, [useVideo, near]);
 
   useEffect(() => {
     const el = root.current;
@@ -170,7 +196,7 @@ export default function ContactSection() {
             <video
               ref={bottomVideo}
               className="cn-video"
-              src={SKY_VIDEO}
+              src={loaded ? SKY_VIDEO : undefined}
               autoPlay
               muted
               loop
@@ -181,7 +207,7 @@ export default function ContactSection() {
             <video
               ref={topVideo}
               className="cn-video cn-video-top"
-              src={SKY_VIDEO}
+              src={loaded ? SKY_VIDEO : undefined}
               autoPlay
               muted
               loop

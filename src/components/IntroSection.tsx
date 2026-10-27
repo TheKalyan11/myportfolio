@@ -214,6 +214,11 @@ export default function IntroSection() {
     };
     const update = () => {
       frame = 0;
+      // Nothing to repaint while the text is well away from the screen (this runs on every scroll frame of the page)
+      const vhNow = window.innerHeight;
+      const probe = (tall ? stage : track).getBoundingClientRect();
+      if (probe.top > vhNow * 2 || probe.bottom < -vhNow) return;
+
       let progress: number;
       if (tall) {
         // not pinned: fill while the text moves up through the screen

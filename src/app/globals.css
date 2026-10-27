@@ -1174,6 +1174,8 @@ body {
 }
 
 .svc-panel { position: relative; overflow: hidden; background: #f6f1e0; --p: 0; }
+/* panels that are off screen stand still (see ServicesSection.tsx) */
+.svc-panel.is-offscreen, .svc-panel.is-offscreen *, .svc-panel.is-offscreen *::before, .svc-panel.is-offscreen *::after { animation-play-state: paused !important; }
 
 /* The mockups are drawn at a fixed size inside this box and scaled as one piece, so the
    same artwork shrinks smoothly when its row folds up. */
@@ -5843,14 +5845,20 @@ body [disabled] { cursor: not-allowed !important; }
   place-items: center;
   background: #16379c;
   cursor: pointer;
-  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
-  /* safety net: if scripts never run, the screen still disappears on its own */
-  animation: splash-failsafe 0.01s linear 7s forwards;
+  /* its own layer from the start, so the slide up is moved by the graphics card without having to build the layer first */
+  will-change: transform;
+  contain: layout paint;
+  /* The signature takes 4s to write, then it holds for a moment and the screen slides up (0.9s). All of it is CSS, so it also
+     works as the safety net: even if scripts never run, the screen leaves by itself and ends up hidden off the top. */
+  animation: splash-leave 0.9s cubic-bezier(0.76, 0, 0.24, 1) 4.65s both;
 }
-@keyframes splash-failsafe { to { visibility: hidden; pointer-events: none; } }
-.splash.leaving { transform: translateY(-100%); }
+.splash.skip { animation: splash-leave-now 0.7s cubic-bezier(0.76, 0, 0.24, 1) both; }
+@keyframes splash-leave { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -100%, 0); visibility: hidden; } }
+@keyframes splash-leave-now { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -100%, 0); visibility: hidden; } }
 @media not all /* reduce-motion rules are off on purpose, see src/lib/motion.ts */ { .splash { display: none; } }
-html.splash-lock, html.splash-lock body { overflow: hidden; }
+html.splash-lock, html.splash-lock body { overscroll-behavior: none; }
+/* the hero's entrance waits until the screen starts to slide up, so it plays as the page is revealed */
+html.splash-hold .hero-line > span { animation-play-state: paused; }
 
 .splash-sig { width: min(72vw, 600px); height: auto; overflow: visible; }
 .splash-sig path {
@@ -5860,12 +5868,13 @@ html.splash-lock, html.splash-lock body { overflow: hidden; }
   stroke-linejoin: round;
   stroke-dasharray: 1 1;
   stroke-dashoffset: 1;
+  visibility: hidden;
   animation: splash-draw var(--dur) linear var(--delay) both;
 }
 @keyframes splash-draw {
-  0%   { stroke-dashoffset: 1; opacity: 0; }
-  1%   { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 1; }
+  0%   { stroke-dashoffset: 1; visibility: hidden; }
+  0.1% { visibility: visible; }
+  100% { stroke-dashoffset: 0; visibility: visible; }
 }
 
 /* ===== Crazy Calculator (joke mini-game in the Explore section) ===== */

@@ -1,21 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { SIGNATURE } from "@/data/signature";
 import { prefersReducedMotion } from "@/lib/motion";
 
 /**
- * The opening screen: a red page where the signature writes itself, then the page slides up to reveal the site.
+ * The opening screen: a blue page where the signature writes itself, then the page slides up to reveal the site.
  * It plays every time the website is opened or reloaded, but not again when moving between pages inside the site.
  * Visitors who prefer reduced motion never see it (the stylesheet hides it). Click the screen to skip.
+ *
+ * The whole timeline (writing, the pause and the slide up) is CSS, so it runs on the browser's animation clock and does not
+ * wait for the page's JavaScript to start. Here we only (1) keep the page from scrolling underneath, (2) hold the hero's
+ * entrance until the slide up begins, and (3) remove the screen once the slide up has finished.
  */
 
 // true once it has played in this page load (a full reload resets it)
 let played = false;
 
-const DRAW_SECONDS = 4; // time to write the whole signature
-const HOLD_MS = 650; // pause on the finished signature
-const LEAVE_MS = 900; // the slide up
+const DRAW_SECONDS = 4; // time to write the whole signature (the pause and the slide up are set in globals.css)
 
 const total = SIGNATURE.strokes.reduce((sum, s) => sum + s.len, 0);
 // The pen eases in at the first stroke and eases out at the last (sine curve over the whole signature); inside each stroke the
@@ -29,9 +31,14 @@ const TIMING = SIGNATURE.strokes.map((s) => {
   return { delay: t0, dur: Math.max(0.05, t1 - t0) };
 });
 
+const SCROLL_KEYS = new Set([" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"]);
+const isLeave = (name: string) => name === "splash-leave" || name === "splash-leave-now";
+
 export default function SplashScreen() {
-  const [leaving, setLeaving] = useState(false);
   const [gone, setGone] = useState(() => played);
+  const [skipped, setSkipped] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const watchRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     if (played) return;
@@ -39,25 +46,69 @@ export default function SplashScreen() {
       played = true;
       return;
     }
-    const root = document.documentElement;
-    root.classList.add("splash-lock");
-    const t1 = window.setTimeout(() => setLeaving(true), DRAW_SECONDS * 1000 + HOLD_MS);
-    const t2 = window.setTimeout(() => {
-      played = true; // marked only when finished, so React dev double-run of this effect still plays it
+    const html = document.documentElement;
+    html.classList.add("splash-lock", "splash-hold");
+
+    // Keep the page from scrolling under the opening screen. (Setting overflow:hidden instead would make the browser lay the
+    // whole page out again when the screen goes, which showed up as a hitch at the end of the slide.)
+    const stop = (e: Event) => e.preventDefault();
+    const stopKeys = (e: KeyboardEvent) => {
+      if (SCROLL_KEYS.has(e.key)) e.preventDefault();
+    };
+    window.addEventListener("wheel", stop, { passive: false });
+    window.addEventListener("touchmove", stop, { passive: false });
+    window.addEventListener("keydown", stopKeys);
+
+    const finish = () => {
+      played = true;
+      html.classList.remove("splash-lock", "splash-hold");
       setGone(true);
-      root.classList.remove("splash-lock");
-    }, DRAW_SECONDS * 1000 + HOLD_MS + LEAVE_MS);
+    };
+
+    // Follow the slide-up animation itself (not DOM events, which only arrive when a frame is drawn): when it begins let the hero's
+    // entrance play, and when it has finished remove the screen. This also catches up if the page's JavaScript started late.
+    const holdTimers: number[] = [];
+    const watch = () => {
+      const leave = root.current?.getAnimations().find((a) => isLeave((a as CSSAnimation).animationName));
+      if (!leave) return;
+      const delay = Number(leave.effect?.getTiming().delay ?? 0);
+      const current = typeof leave.currentTime === "number" ? leave.currentTime : 0;
+      holdTimers.push(window.setTimeout(() => html.classList.remove("splash-hold"), Math.max(0, delay - current)));
+      leave.finished.then(finish).catch(() => {
+        /* replaced by another animation (the click to skip): that one is watched separately */
+      });
+    };
+    watchRef.current = watch;
+    watch();
+
+    // safety net, in case the animation never runs (for example a tab that was in the background the whole time)
+    const safety = window.setTimeout(finish, 9000);
+
     return () => {
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      root.classList.remove("splash-lock");
+      window.clearTimeout(safety);
+      holdTimers.forEach((id) => window.clearTimeout(id));
+      watchRef.current = () => {};
+      window.removeEventListener("wheel", stop);
+      window.removeEventListener("touchmove", stop);
+      window.removeEventListener("keydown", stopKeys);
+      html.classList.remove("splash-lock", "splash-hold");
     };
   }, []);
+
+  // after a click to skip, the slide up is a new animation: watch that one too
+  useEffect(() => {
+    if (skipped) watchRef.current();
+  }, [skipped]);
 
   if (gone) return null;
 
   return (
-    <div className={`splash ${leaving ? "leaving" : ""}`} aria-hidden onClick={() => setLeaving(true)}>
+    <div
+      ref={root}
+      className={`splash${skipped ? " skip" : ""}`}
+      aria-hidden
+      onClick={() => setSkipped(true)}
+    >
       <svg className="splash-sig" viewBox={`0 0 ${SIGNATURE.width} ${SIGNATURE.height}`} role="presentation">
         {SIGNATURE.strokes.map((s, i) => (
           <path
