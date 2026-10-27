@@ -59,8 +59,17 @@ export default function SplashScreen() {
     window.addEventListener("touchmove", stop, { passive: false });
     window.addEventListener("keydown", stopKeys);
 
+    // Let the page scroll again. (This component stays mounted after the screen is gone, so the effect clean-up below does not run
+    // then: the scroll blockers have to be taken off here, or the page would never scroll.)
+    const unblock = () => {
+      window.removeEventListener("wheel", stop);
+      window.removeEventListener("touchmove", stop);
+      window.removeEventListener("keydown", stopKeys);
+    };
+
     const finish = () => {
       played = true;
+      unblock();
       html.classList.remove("splash-lock", "splash-hold");
       setGone(true);
     };
@@ -88,9 +97,7 @@ export default function SplashScreen() {
       window.clearTimeout(safety);
       holdTimers.forEach((id) => window.clearTimeout(id));
       watchRef.current = () => {};
-      window.removeEventListener("wheel", stop);
-      window.removeEventListener("touchmove", stop);
-      window.removeEventListener("keydown", stopKeys);
+      unblock();
       html.classList.remove("splash-lock", "splash-hold");
     };
   }, []);
