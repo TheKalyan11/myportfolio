@@ -82,9 +82,9 @@ export default function OpenSourceSection() {
 
   return (
     <section id="open-source" className="os" aria-labelledby="os-heading">
-      <p className="pr-kicker">(OPEN SOURCE)</p>
+      <p className="pr-kicker">(MY GITHUB)</p>
       <h2 id="os-heading" className="pr-heading">
-        Open source
+        My GitHub
       </h2>
       <p className="os-lede">I contribute to open source. These are my latest public repositories, loaded live from GitHub.</p>
 

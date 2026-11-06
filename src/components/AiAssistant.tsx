@@ -42,8 +42,8 @@ const FACTS: Fact[] = [
   {
     id: "certs",
     title: "Certifications",
-    keys: ["certificate", "certificates", "certification", "certifications", "certified", "aws", "flutter", "google", "microsoft", "course", "learning"],
-    answer: "Certifications: Full-Stack Certified, a Full-Stack Web Development Program, Flutter Certified, AWS Certified, AI Certified from Google and a Generative AI Foundations Certificate from Microsoft.",
+    keys: ["certificate", "certificates", "certification", "certifications", "certified", "flutter", "upgrad", "course", "learning"],
+    answer: "Certifications: Full-Stack Certified, a Full-Stack Web Development Program, Flutter Certified and a Generative AI Foundations Certificate from upGrad Education Private Limited.",
   },
   {
     id: "services",
@@ -53,7 +53,7 @@ const FACTS: Fact[] = [
   },
   {
     id: "opensource",
-    title: "Open source",
+    title: "My GitHub",
     keys: ["open", "source", "contribute", "contributor", "contributions", "repo", "repository", "github", "code"],
     answer: `Kalyan is an open source contributor, and some projects (MD Mesh and Movie365) have public repositories. Everything is on GitHub: ${GITHUB}`,
   },

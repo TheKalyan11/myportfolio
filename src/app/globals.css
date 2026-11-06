@@ -6491,7 +6491,8 @@ html[data-theme="dark"] .ts { --ts-bg: var(--d-bg); --ts-ink: var(--d-ink); --ts
 html[data-theme="dark"] .ts-name { color: #2a2925; }
 html[data-theme="dark"] .ct { --ct-bg: var(--d-bg); --ct-ink: var(--d-ink); }
 /* the AWS logo file has dark lettering: flip it for the dark theme (the orange arrow keeps its colour) */
-html[data-theme="dark"] .ct-badge img { filter: invert(1) hue-rotate(180deg); }
+html[data-theme="dark"] .ct-badge img { filter: none; }
+html[data-theme="dark"] .ct-badge img[src$="upgrad.svg"] { filter: brightness(1.8); }
 html[data-theme="dark"] .ct .ct-badge .ct-stack-icon .ct-stack-check { color: var(--d-red); }
 
 /* services rows: the panel behind the animated mockups */

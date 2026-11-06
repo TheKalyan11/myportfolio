@@ -30,7 +30,7 @@ const NAV_LINKS = [
   { number: "05", label: "Tech Stack", href: "#tech-stack" },
   { number: "06", label: "Other Skills", href: "#other-skills" },
   { number: "07", label: "Certifications", href: "#certifications" },
-  { number: "08", label: "Open Source", href: "#open-source" },
+  { number: "08", label: "My GitHub", href: "#open-source" },
   { number: "09", label: "Explore", href: "#explore" },
   { number: "10", label: "FAQ", href: "#faq" },
   { number: "11", label: "Contact", href: "#contact" },
